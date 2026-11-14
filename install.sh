@@ -5,7 +5,7 @@ set -eu
 MODULE="github.com/soham1105-tech/orqen"
 REPO="https://github.com/soham1105-tech/orqen.git"
 BIN_DIR="${BIN_DIR:-$HOME/.local/bin}"
-VERSION="${VERSION:-v0.4.0}"
+VERSION="${VERSION:-v0.5.0}"
 
 say() { printf '%s\n' "$*"; }
 die() { printf 'error: %s\n' "$*" >&2; exit 1; }

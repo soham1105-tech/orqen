@@ -2,6 +2,10 @@ version: 2
 
 project_name: orqen
 
+before:
+  hooks:
+    - go mod tidy
+
 builds:
   - id: orqen
     main: .
@@ -10,19 +14,28 @@ builds:
       - CGO_ENABLED=0
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
+    ignore:
+      - goos: windows
+        goarch: arm64
     ldflags:
       - -s -w
       - -X github.com/soham1105-tech/orqen/cmd.Version={{.Version}}
       - -X github.com/soham1105-tech/orqen/cmd.BuildTime={{.Date}}
+      - -X github.com/soham1105-tech/orqen/cmd.GitCommit={{.FullCommit}}
+    flags:
+      - -trimpath
 
 archives:
   - formats: [tar.gz]
     format_overrides:
       - goos: windows
         formats: [zip]
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}
 
 checksum:
   name_template: checksums.txt
+  algorithm: sha256
 
 changelog:
   sort: asc
@@ -31,3 +44,45 @@ changelog:
       - "^docs:"
       - "^test:"
       - "^chore:"
+      - "^ci:"
+
+release:
+  github:
+    owner: soham1105-tech
+    name: orqen
+  draft: false
+  prerelease: auto
+
+homebrew_casks:
+  - name: orqen
+    repository: soham1105-tech/homebrew-tap
+    commit_author:
+      name: goreleaserbot
+      email: goreleaser@soham1105-tech/orqen
+    description: "ORQEN — Autonomous infrastructure control plane & self-healing DevOps agent"
+    license: MIT
+
+scoop:
+  bucket:
+    owner: soham1105-tech
+    name: scoop-bucket
+  commit_author:
+    name: goreleaserbot
+    email: goreleaser@soham1105-tech/orqen
+  homepage: https://github.com/soham1105-tech/orqen
+  description: "ORQEN — Autonomous infrastructure control plane & self-healing DevOps agent"
+  license: MIT
+
+docker_images:
+  - image_templates:
+      - "ghcr.io/soham1105-tech/orqen:{{ .Version }}"
+      - "ghcr.io/soham1105-tech/orqen:latest"
+    dockerfile: Dockerfile.release
+    goos: linux
+    goarch: [amd64, arm64]
+    ids:
+      - orqen
+    build_flag_templates:
+      - "--platform=linux/{{ .Arch }}"
+    extra_files:
+      - "LICENSE"

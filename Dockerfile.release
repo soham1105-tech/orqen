@@ -1,0 +1,37 @@
+# Dockerfile.release - Multi-stage build for ORQEN release image
+# This produces a minimal distroless image with the orqen binary
+
+# Build stage
+FROM golang:1.27-alpine AS builder
+
+RUN apk add --no-cache git make
+
+WORKDIR /src
+
+# Copy go mod files first for caching
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy source
+COPY . .
+
+# Build with version info
+ARG VERSION=dev
+ARG BUILD_TIME
+ARG GIT_COMMIT
+RUN CGO_ENABLED=0 go build -trimpath \
+    -ldflags "-s -w \
+      -X github.com/soham1105-tech/orqen/cmd.Version=${VERSION} \
+      -X github.com/soham1105-tech/orqen/cmd.BuildTime=${BUILD_TIME} \
+      -X github.com/soham1105-tech/orqen/cmd.GitCommit=${GIT_COMMIT}" \
+    -o orqen .
+
+# Final stage - distroless
+FROM gcr.io/distroless/static-debian12:nonroot
+
+COPY --from=builder /src/orqen /orqen
+
+# Copy license
+COPY --from=builder /src/LICENSE /
+
+ENTRYPOINT ["/orqen"]

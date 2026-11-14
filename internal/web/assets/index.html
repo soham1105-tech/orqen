@@ -3,17 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <title>ORQEN</title>
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#00D4AA">
+  <title>ORQEN — Build. Test. Heal. Ship.</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/favicon.svg">
   <link rel="stylesheet" href="/assets/app.css">
 </head>
 <body>
   <div class="app" id="app">
     <aside class="sidebar">
       <div class="brand">
-        <span class="brand-mark" aria-hidden="true">◈</span>
+        <svg class="brand-mark" aria-hidden="true" viewBox="0 0 32 32" width="28" height="28"><polygon points="16,4 28,16 16,28 4,16" fill="#00D4AA"/><circle cx="16" cy="16" r="3" fill="#fff"/></svg>
         <span class="brand-name">ORQEN</span>
-        <span class="brand-ver">0.4</span>
+        <span class="brand-ver">0.5</span>
       </div>
 
       <button class="new-chat" id="new-chat" type="button">
@@ -48,11 +51,12 @@
 
       <section class="thread" id="thread" aria-live="polite">
         <div class="empty" id="empty">
-          <div class="empty-mark" aria-hidden="true">◈</div>
+          <svg class="empty-mark" aria-hidden="true" viewBox="0 0 32 32" width="48" height="48"><polygon points="16,4 28,16 16,28 4,16" fill="#00D4AA"/><circle cx="16" cy="16" r="3" fill="#fff"/></svg>
           <h1>What should we ship?</h1>
-          <p>ORQEN is an agent with real tools. Ask it to onboard a repository, diagnose a failure, heal a build, or explain a topology.</p>
+          <p>ORQEN is your infrastructure agent. Ask it to onboard a repository, diagnose a failure, heal a build, or explain a topology.</p>
           <div class="prompts">
             <button type="button" data-prompt="status">status</button>
+            <button type="button" data-prompt="run tests">test</button>
             <button type="button" data-prompt="why did it fail?">diagnose</button>
             <button type="button" data-prompt="explain the topology">explain</button>
             <button type="button" data-prompt="/onboard https://github.com/">onboard a repo</button>

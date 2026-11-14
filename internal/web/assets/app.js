@@ -437,7 +437,7 @@ function renderMessage(msg) {
 
   const role = document.createElement('div');
   role.className = 'role';
-  role.innerHTML = '<span class="mark">◈</span><span>ORQEN</span>';
+  role.innerHTML = '<svg class="mark" viewBox="0 0 32 32" width="18" height="18"><polygon points="16,4 28,16 16,28 4,16" fill="#00D4AA"/><circle cx="16" cy="16" r="3" fill="#fff"/></svg><span>ORQEN</span>';
   article.appendChild(role);
 
   const body = document.createElement('div');

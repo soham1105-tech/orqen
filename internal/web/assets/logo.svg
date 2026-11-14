@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D4AA;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#00A3E0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C4DFF;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background circle with gradient -->
+  <circle cx="64" cy="64" r="60" fill="url(#grad)" filter="url(#glow)" opacity="0.15"/>
+
+  <!-- Outer ring -->
+  <circle cx="64" cy="64" r="58" fill="none" stroke="url(#grad)" stroke-width="3" opacity="0.8"/>
+
+  <!-- Inner diamond (lozenge) - the ORQEN mark -->
+  <polygon points="64,18 110,64 64,110 18,64" fill="none" stroke="url(#grad)" stroke-width="4" stroke-linejoin="round"/>
+
+  <!-- Central dot -->
+  <circle cx="64" cy="64" r="6" fill="url(#grad)"/>
+
+  <!-- Subtle accent lines -->
+  <g stroke="url(#grad)" stroke-width="1.5" opacity="0.6">
+    <line x1="64" y1="30" x2="64" y2="42" stroke-linecap="round"/>
+    <line x1="64" y1="86" x2="64" y2="98" stroke-linecap="round"/>
+    <line x1="30" y1="64" x2="42" y2="64" stroke-linecap="round"/>
+    <line x1="86" y1="64" x2="98" y2="64" stroke-linecap="round"/>
+  </g>
+
+  <!-- Corner accents -->
+  <g stroke="url(#grad)" stroke-width="2" stroke-linecap="round" opacity="0.5">
+    <path d="M28 28 L40 28 M28 28 L28 40"/>
+    <path d="M100 28 M88 28 L100 28 M100 28 L100 40"/>
+    <path d="M28 100 M28 88 L28 100 M28 100 L40 100"/>
+    <path d="M100 100 M100 88 L100 100 M88 100 L100 100"/>
+  </g>
+</svg>

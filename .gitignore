@@ -22,4 +22,5 @@ bin/
 # Local scratch
 /tmp/
 *.out
-coverage.txtqa-screenshots/
+coverage.txt
+qa-screenshots/

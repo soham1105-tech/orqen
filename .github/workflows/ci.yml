@@ -1,33 +1,113 @@
-name: ci
+name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
 
 permissions:
   contents: read
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    name: Test (Go ${{ matrix.go-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        go-version: ['1.27', '1.28']
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        exclude:
+          - go-version: '1.28'
+            os: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version: ${{ matrix.go-version }}
           cache: true
-      - name: gofmt
+
+      - name: Verify gofmt
         run: |
           files=$(gofmt -l .)
-          if [ -n "$files" ]; then echo "$files"; exit 1; fi
-      - name: vet
+          if [ -n "$files" ]; then
+            echo "gofmt failed for:"
+            echo "$files"
+            exit 1
+          fi
+
+      - name: Run go vet
         run: go vet ./...
-      - name: test (race)
+
+      - name: Run tests (race detector)
         run: go test -race ./...
-      - name: build
+
+      - name: Build binary
         run: go build -trimpath -ldflags "-s -w" -o orqen .
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: orqen-linux-amd64
-          path: orqen
+          name: orqen-${{ matrix.os }}-${{ matrix.go-version }}
+          path: orqen*
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache: true
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          args: --timeout=5m
+
+  build:
+    name: Build Release Artifacts
+    runs-on: ubuntu-latest
+    needs: [test, lint]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+          cache: true
+
+      - name: Run GoReleaser (snapshot)
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: latest
+          args: release --snapshot --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docker:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -f Dockerfile.release -t orqen:test .
+
+      - name: Test Docker image
+        run: docker run --rm orqen:test --version
