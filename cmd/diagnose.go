@@ -7,11 +7,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/healer"
-	"github.com/monojitgoswami69/spool/internal/safefs"
-	"github.com/monojitgoswami69/spool/internal/state"
-	"github.com/monojitgoswami69/spool/internal/ui"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/healer"
+	"github.com/soham1105-tech/orqen/internal/safefs"
+	"github.com/soham1105-tech/orqen/internal/state"
+	"github.com/soham1105-tech/orqen/internal/ui"
 )
 
 // printFailureReport turns a failed init/heal into an actionable summary.

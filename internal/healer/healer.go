@@ -17,9 +17,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/llm"
-	"github.com/monojitgoswami69/spool/internal/safefs"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/llm"
+	"github.com/soham1105-tech/orqen/internal/safefs"
 )
 
 // DefaultMaxTries is the default repair budget.

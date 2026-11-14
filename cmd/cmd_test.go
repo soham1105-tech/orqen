@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/config"
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/web"
+	"github.com/soham1105-tech/orqen/internal/config"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/web"
 )
 
 func TestResolveSourceLocal(t *testing.T) {
@@ -89,7 +89,7 @@ func contains(s, sub string) bool {
 }
 
 func TestWebLocalCommandsAndConfig(t *testing.T) {
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	b := &localWebBackend{}
 	for _, text := range []string{"/projects", "/doctor", "/version", "/config", "/setup", "/help"} {
 		handled, out := b.localCommand(context.Background(), web.ChatRequest{}, text)

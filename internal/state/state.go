@@ -12,19 +12,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/config"
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/safefs"
+	"github.com/soham1105-tech/orqen/internal/config"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/safefs"
 )
 
 const (
-	lockFile = "orqen.lock.json"
-	// legacyLockFile is read when no orqen.lock.json exists yet, so projects
-	// initialized before the ORQEN rename keep loading.
-	legacyLockFile = "spool.lock.json"
-	envFile        = ".env"
-	overridesFile  = "env-overrides.json"
-	repairsFile    = "repairs.json"
+	lockFile      = "orqen.lock.json"
+	envFile       = ".env"
+	overridesFile = "env-overrides.json"
+	repairsFile   = "repairs.json"
 )
 
 // Manager owns one project's state directory.
@@ -82,21 +79,14 @@ func (m *Manager) SaveLock(l *domain.Lock) error {
 	return safefs.WriteFileAtomic(m.LockPath(), append(data, '\n'), 0o600)
 }
 
-// LoadLock reads the lock, returning MissingLockError when absent. Projects
-// created before the ORQEN rename keep working: if there is no
-// orqen.lock.json, the legacy spool.lock.json is read as a fallback.
+// LoadLock reads the lock, returning MissingLockError when absent.
 func (m *Manager) LoadLock() (*domain.Lock, error) {
 	data, err := os.ReadFile(m.LockPath())
 	if err != nil {
 		if os.IsNotExist(err) {
-			if legacy, lerr := os.ReadFile(filepath.Join(m.Dir, legacyLockFile)); lerr == nil {
-				data = legacy
-			} else {
-				return nil, &domain.MissingLockError{Project: m.ID}
-			}
-		} else {
-			return nil, domain.E(domain.KindIO, "state.LoadLock", "read lock", err)
+			return nil, &domain.MissingLockError{Project: m.ID}
 		}
+		return nil, domain.E(domain.KindIO, "state.LoadLock", "read lock", err)
 	}
 	var l domain.Lock
 	if err := json.Unmarshal(data, &l); err != nil {

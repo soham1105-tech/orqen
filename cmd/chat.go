@@ -15,15 +15,15 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 
-	"github.com/monojitgoswami69/spool/internal/agent"
-	"github.com/monojitgoswami69/spool/internal/config"
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/graph"
-	"github.com/monojitgoswami69/spool/internal/portprobe"
-	"github.com/monojitgoswami69/spool/internal/safefs"
-	"github.com/monojitgoswami69/spool/internal/state"
-	"github.com/monojitgoswami69/spool/internal/tunnel"
-	"github.com/monojitgoswami69/spool/internal/ui"
+	"github.com/soham1105-tech/orqen/internal/agent"
+	"github.com/soham1105-tech/orqen/internal/config"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/graph"
+	"github.com/soham1105-tech/orqen/internal/portprobe"
+	"github.com/soham1105-tech/orqen/internal/safefs"
+	"github.com/soham1105-tech/orqen/internal/state"
+	"github.com/soham1105-tech/orqen/internal/tunnel"
+	"github.com/soham1105-tech/orqen/internal/ui"
 )
 
 var chatCmd = &cobra.Command{

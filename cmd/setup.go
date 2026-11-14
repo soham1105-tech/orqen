@@ -11,9 +11,9 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 
-	"github.com/monojitgoswami69/spool/internal/config"
-	"github.com/monojitgoswami69/spool/internal/llm"
-	"github.com/monojitgoswami69/spool/internal/ui"
+	"github.com/soham1105-tech/orqen/internal/config"
+	"github.com/soham1105-tech/orqen/internal/llm"
+	"github.com/soham1105-tech/orqen/internal/ui"
 )
 
 var setupCmd = &cobra.Command{

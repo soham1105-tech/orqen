@@ -12,29 +12,14 @@ rm -rf "$ORQEN_HOME"
 mkdir -p "$ORQEN_HOME" "$OUT"
 
 DEFAULT_REPOS="
-https://github.com/monojitgoswami69/collabify
-https://github.com/monojitgoswami69/Tallo
-https://github.com/monojitgoswami69/blogs
-https://github.com/monojitgoswami69/gitopsy
-https://github.com/monojitgoswami69/Innofusion3
-https://github.com/monojitgoswami69/nohara-family-webmaniacs
-https://github.com/monojitgoswami69/certify
-https://github.com/monojitgoswami69/Sevatra
-https://github.com/monojitgoswami69/FundMySkill
-https://github.com/monojitgoswami69/codalyzer
-https://github.com/monojitgoswami69/roomi
-https://github.com/monojitgoswami69/campus-dost
-https://github.com/monojitgoswami69/nexus
-https://github.com/monojitgoswami69/portfolio-manager
-https://github.com/monojitgoswami69/BI_Agent
-https://github.com/monojitgoswami69/hacktropica
-https://github.com/monojitgoswami69/frosthacks
-https://github.com/monojitgoswami69/github-readme-stats
-https://github.com/monojitgoswami69/Shiksha_Saathi
-https://github.com/monojitgoswami69/Python-Games
-https://github.com/monojitgoswami69/chimera
-https://github.com/monojitgoswami69/yoink
-https://github.com/monojitgoswami69/github-readme-streak-stats
+https://github.com/gin-gonic/gin
+https://github.com/pallets/flask
+https://github.com/expressjs/express
+https://github.com/serde-rs/serde
+https://github.com/sindresorhus/got
+https://github.com/fastapi/fastapi
+https://github.com/go-chi/chi
+https://github.com/httpie/httpie
 "
 
 REPOS=${REPOS:-$DEFAULT_REPOS}

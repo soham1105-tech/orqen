@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 func pyService(deps ...string) *domain.Service {
@@ -77,7 +77,7 @@ func TestComposePortableWithInfraAndExternal(t *testing.T) {
 	work := t.TempDir()
 	src := t.TempDir()
 	p := &domain.Project{
-		ID: "abc", SourcePath: src, WorkDir: work, NetworkName: "spool-abc-net",
+		ID: "abc", SourcePath: src, WorkDir: work, NetworkName: "orqen-abc-net",
 		Services: []*domain.Service{{
 			Name: "web", Path: ".", Language: domain.LangNode, Framework: domain.FrameworkNextJS,
 			Port: 3000, HostPort: 3002, DefaultPort: 3000,

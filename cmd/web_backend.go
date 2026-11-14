@@ -6,12 +6,12 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/agent"
-	"github.com/monojitgoswami69/spool/internal/config"
-	"github.com/monojitgoswami69/spool/internal/docker"
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/state"
-	"github.com/monojitgoswami69/spool/internal/web"
+	"github.com/soham1105-tech/orqen/internal/agent"
+	"github.com/soham1105-tech/orqen/internal/config"
+	"github.com/soham1105-tech/orqen/internal/docker"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/state"
+	"github.com/soham1105-tech/orqen/internal/web"
 )
 
 type localWebBackend struct {

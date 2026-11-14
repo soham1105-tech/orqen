@@ -6,11 +6,11 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/monojitgoswami69/spool/internal/config"
+	"github.com/soham1105-tech/orqen/internal/config"
 )
 
 func TestPersistPanelConfigAllowsEnvKey(t *testing.T) {
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	cfg := config.LoadOptional()
 	resolved := &config.Resolved{Provider: "gemini", APIKey: "env-key"}
 	if err := persistPanelConfig(cfg, resolved, "gemini", "", "", "https://example.test", "pat-123"); err != nil {
@@ -26,7 +26,7 @@ func TestPersistPanelConfigAllowsEnvKey(t *testing.T) {
 }
 
 func TestPersistPanelConfigRequiresKey(t *testing.T) {
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	cfg := config.LoadOptional()
 	resolved := &config.Resolved{Provider: "gemini", APIKey: "env-key"}
 	if err := persistPanelConfig(cfg, resolved, "openai", "", "", "", ""); err == nil {
@@ -52,7 +52,7 @@ func TestConfigPanelProviderCycle(t *testing.T) {
 }
 
 func TestConfigPanelSaveViaUpdate(t *testing.T) {
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	cfg := config.LoadOptional()
 	resolved := &config.Resolved{Provider: "gemini", APIKey: "env-key"}
 	m := newConfigPanelModel(cfg, resolved)
@@ -75,7 +75,7 @@ func TestConfigPanelSaveViaUpdate(t *testing.T) {
 }
 
 func TestConfigPanelSaveShowsValidationError(t *testing.T) {
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	cfg := config.LoadOptional()
 	m := newConfigPanelModel(cfg, &config.Resolved{Provider: "gemini", APIKey: "env-key"})
 	m.provider = "openai"

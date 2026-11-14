@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 // fakeExecer records what Run sent to the container and replays a canned

@@ -15,8 +15,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/safefs"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/safefs"
 )
 
 var (
@@ -27,7 +27,7 @@ var (
 
 	walkSkip = map[string]bool{
 		"node_modules": true, ".git": true, ".next": true, "dist": true, "build": true,
-		"vendor": true, "legacy": true, ".spool": true, "venv": true, ".venv": true,
+		"vendor": true, "legacy": true, ".orqen": true, "venv": true, ".venv": true,
 		"__pycache__": true, "target": true, ".nuxt": true, ".svelte-kit": true,
 	}
 

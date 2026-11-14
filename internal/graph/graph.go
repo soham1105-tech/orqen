@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 // NodeKind classifies a graph node.

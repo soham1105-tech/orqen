@@ -4,7 +4,7 @@ import (
 	"net"
 	"testing"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 func TestAllocateUnique(t *testing.T) {

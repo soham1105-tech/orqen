@@ -11,7 +11,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/agent"
+	"github.com/soham1105-tech/orqen/internal/agent"
 )
 
 //go:embed assets/*

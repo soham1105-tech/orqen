@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 func TestIsGreeting(t *testing.T) {

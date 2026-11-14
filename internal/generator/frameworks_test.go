@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 func nodeSvc(fw domain.Framework, pm domain.PackageManager, build, start string, port int) *domain.Service {

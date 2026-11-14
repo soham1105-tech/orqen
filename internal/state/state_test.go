@@ -1,20 +1,19 @@
 package state
 
 import (
-	"encoding/json"
 	"os"
 	"path/filepath"
 	"runtime"
 	"testing"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 func setup(t *testing.T) string {
 	t.Helper()
 	home := t.TempDir()
-	t.Setenv("SPOOL_HOME", home)
+	t.Setenv("ORQEN_HOME", home)
 	return home
 }
 
@@ -45,37 +44,15 @@ func validID(id string) bool {
 	return true
 }
 
-// TestLoadLockFallsBackToLegacySpoolLock covers projects initialized before
-// the ORQEN rename: their state dir still holds spool.lock.json.
-func TestLoadLockFallsBackToLegacySpoolLock(t *testing.T) {
+// TestMissingLockErrors covers loading state for a project that has no lock
+// file yet.
+func TestMissingLockErrors(t *testing.T) {
 	setup(t)
-	m, err := Ensure("demo-1234")
+	m, err := Ensure("empty-5678")
 	if err != nil {
 		t.Fatal(err)
 	}
-	legacy := &domain.Lock{Project: "demo", ProjectID: "demo-1234", RepoPath: "/repo", WorkDir: m.Dir, LastInit: time.Now()}
-	data, err := json.Marshal(legacy)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := os.WriteFile(filepath.Join(m.Dir, "spool.lock.json"), data, 0o666); err != nil {
-		t.Fatal(err)
-	}
-	got, err := m.LoadLock()
-	if err != nil {
-		t.Fatalf("LoadLock(legacy) failed: %v", err)
-	}
-	if got.Project != "demo" || got.ProjectID != "demo-1234" {
-		t.Fatalf("unexpected lock %+v", got)
-	}
-
-	// With neither file present, the missing-lock error is unchanged.
-	_ = setup(t)
-	m2, err := Ensure("empty-5678")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if _, err := m2.LoadLock(); err == nil {
+	if _, err := m.LoadLock(); err == nil {
 		t.Fatal("expected MissingLockError with no lock file")
 	}
 }

@@ -1,6 +1,6 @@
 # ORQEN
 
-[![ci](https://github.com/monojitgoswami69/spool/actions/workflows/ci.yml/badge.svg)](https://github.com/monojitgoswami69/spool/actions/workflows/ci.yml)
+[![ci](https://github.com/soham1105-tech/orqen/actions/workflows/ci.yml/badge.svg)](https://github.com/soham1105-tech/orqen/actions/workflows/ci.yml)
 
 **Build. Test. Heal. Ship.**
 *Autonomous infrastructure control plane & self-healing DevOps agent.*
@@ -12,9 +12,6 @@ backing infrastructure it needs, generates portable multi-stage Dockerfiles and
 a `docker-compose.yml`, allocates conflict-free host ports, starts the stack,
 runs each service's test suite inside its own container, verifies everything
 with real HTTP probes, and repairs build or runtime failures in a closed loop.
-
-> ORQEN is the new name of the Spool project. The Go module path
-> (`github.com/monojitgoswami69/spool`) and repository URL are unchanged.
 
 ```
 $ orqen init https://github.com/acme/app
@@ -70,8 +67,8 @@ ORQEN  The api container is healthy but your web service cannot reach it:
 ## Install
 
 ```bash
-git clone https://github.com/monojitgoswami69/spool.git
-cd spool
+git clone https://github.com/soham1105-tech/orqen.git
+cd orqen
 make install          # installs to $(go env GOPATH)/bin
 # or
 make build            # produces ./orqen
@@ -80,17 +77,6 @@ make build            # produces ./orqen
 ```
 
 Requires Go 1.27+ and Docker with Compose v2.
-
-### Migrating from Spool
-
-State lives under `~/.orqen` now. Existing Spool users can move it in one line:
-
-```bash
-mv ~/.spool ~/.orqen
-```
-
-Old `spool.lock.json` files and `SPOOL_*` environment variables keep working:
-ORQEN reads them as legacy fallbacks and never errors on a pre-rename state.
 
 ---
 
@@ -113,9 +99,6 @@ Supported variables:
 | `ORQEN_LLM_API_KEY` / `LLM_API_KEY` | generic key fallback |
 | `GITHUB_PAT` / `GH_TOKEN` | private repo clones |
 | `ORQEN_HOME` | state root (default `~/.orqen`) |
-
-Legacy names (`SPOOL_LLM_*`, `SPOOL_HOME`, `SPOOL_ENV_FILE`) are still honored
-as fallbacks, but `ORQEN_*` always wins when both are set.
 
 Copy `.env.example` to `.env` and fill in a key. **`.env` is gitignored and must
 never be committed.**
@@ -366,7 +349,7 @@ State lives under `~/.orqen/`:
 ├── config.json          # 0600
 ├── repos/<id>/          # shallow clones
 └── projects/<id>/
-    ├── orqen.lock.json  # 0600 (legacy spool.lock.json still reads)
+    ├── orqen.lock.json  # 0600
     ├── .env             # 0600
     ├── env-overrides.json
     ├── repairs.json

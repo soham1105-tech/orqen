@@ -10,15 +10,15 @@ import (
 	"strings"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/config"
-	"github.com/monojitgoswami69/spool/internal/generator"
-	"github.com/monojitgoswami69/spool/internal/git"
-	"github.com/monojitgoswami69/spool/internal/graph"
-	"github.com/monojitgoswami69/spool/internal/httpcheck"
-	"github.com/monojitgoswami69/spool/internal/infra"
-	"github.com/monojitgoswami69/spool/internal/portprobe"
-	"github.com/monojitgoswami69/spool/internal/scanner"
-	"github.com/monojitgoswami69/spool/internal/tunnel"
+	"github.com/soham1105-tech/orqen/internal/config"
+	"github.com/soham1105-tech/orqen/internal/generator"
+	"github.com/soham1105-tech/orqen/internal/git"
+	"github.com/soham1105-tech/orqen/internal/graph"
+	"github.com/soham1105-tech/orqen/internal/httpcheck"
+	"github.com/soham1105-tech/orqen/internal/infra"
+	"github.com/soham1105-tech/orqen/internal/portprobe"
+	"github.com/soham1105-tech/orqen/internal/scanner"
+	"github.com/soham1105-tech/orqen/internal/tunnel"
 )
 
 func objectSchema(props map[string]any, required ...string) map[string]any {

@@ -7,12 +7,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/healer"
-	"github.com/monojitgoswami69/spool/internal/llm"
-	"github.com/monojitgoswami69/spool/internal/portprobe"
-	"github.com/monojitgoswami69/spool/internal/safefs"
-	"github.com/monojitgoswami69/spool/internal/tunnel"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/healer"
+	"github.com/soham1105-tech/orqen/internal/llm"
+	"github.com/soham1105-tech/orqen/internal/portprobe"
+	"github.com/soham1105-tech/orqen/internal/safefs"
+	"github.com/soham1105-tech/orqen/internal/tunnel"
 )
 
 // State is the agent's coarse lifecycle state.

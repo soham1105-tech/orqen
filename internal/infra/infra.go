@@ -10,8 +10,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/portprobe"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/portprobe"
 )
 
 // Standard container ports.

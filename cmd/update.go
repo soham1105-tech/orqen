@@ -10,16 +10,16 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/monojitgoswami69/spool/internal/docker"
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/envvar"
-	"github.com/monojitgoswami69/spool/internal/generator"
-	"github.com/monojitgoswami69/spool/internal/infra"
-	"github.com/monojitgoswami69/spool/internal/portprobe"
-	"github.com/monojitgoswami69/spool/internal/reconciler"
-	"github.com/monojitgoswami69/spool/internal/scanner"
-	"github.com/monojitgoswami69/spool/internal/state"
-	"github.com/monojitgoswami69/spool/internal/ui"
+	"github.com/soham1105-tech/orqen/internal/docker"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/envvar"
+	"github.com/soham1105-tech/orqen/internal/generator"
+	"github.com/soham1105-tech/orqen/internal/infra"
+	"github.com/soham1105-tech/orqen/internal/portprobe"
+	"github.com/soham1105-tech/orqen/internal/reconciler"
+	"github.com/soham1105-tech/orqen/internal/scanner"
+	"github.com/soham1105-tech/orqen/internal/state"
+	"github.com/soham1105-tech/orqen/internal/ui"
 )
 
 var (

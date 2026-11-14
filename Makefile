@@ -1,5 +1,5 @@
 BINARY      := orqen
-MODULE      := github.com/monojitgoswami69/spool
+MODULE      := github.com/soham1105-tech/orqen
 VERSION     ?= v0.4.0
 BUILD_TIME  ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 LDFLAGS     := -s -w -X $(MODULE)/cmd.Version=$(VERSION) -X $(MODULE)/cmd.BuildTime=$(BUILD_TIME)

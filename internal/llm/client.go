@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/config"
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/config"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 const (

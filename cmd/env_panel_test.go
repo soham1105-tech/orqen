@@ -7,13 +7,13 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/state"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/state"
 )
 
 func newEnvPanelFixture(t *testing.T) (*state.Manager, *domain.Lock) {
 	t.Helper()
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	id := state.IDFor("demo", "/tmp/demo-src")
 	mgr, err := state.Ensure(id)
 	if err != nil {

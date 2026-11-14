@@ -1,6 +1,6 @@
 package main
 
-import "github.com/monojitgoswami69/spool/cmd"
+import "github.com/soham1105-tech/orqen/cmd"
 
 func main() {
 	cmd.Execute()

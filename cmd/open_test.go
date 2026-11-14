@@ -3,7 +3,7 @@ package cmd
 import (
 	"testing"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 func TestChooseURL(t *testing.T) {

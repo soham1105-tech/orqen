@@ -11,9 +11,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/scanner/fsutil"
 	"github.com/pelletier/go-toml/v2"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/scanner/fsutil"
 )
 
 // PyProject is the subset of pyproject.toml ORQEN reads (PEP 621 + Poetry).

@@ -7,9 +7,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/scanner/fsutil"
 	"github.com/pelletier/go-toml/v2"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/scanner/fsutil"
 )
 
 type cargoToml struct {

@@ -3,11 +3,11 @@ package testrun
 import (
 	"path/filepath"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/scanner/golang"
-	"github.com/monojitgoswami69/spool/internal/scanner/node"
-	"github.com/monojitgoswami69/spool/internal/scanner/python"
-	"github.com/monojitgoswami69/spool/internal/scanner/rust"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/scanner/golang"
+	"github.com/soham1105-tech/orqen/internal/scanner/node"
+	"github.com/soham1105-tech/orqen/internal/scanner/python"
+	"github.com/soham1105-tech/orqen/internal/scanner/rust"
 )
 
 // Detect resolves the test command for a service from its source directory on

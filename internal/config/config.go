@@ -4,8 +4,6 @@
 //
 // Environment variables are ORQEN_* (ORQEN_HOME, ORQEN_LLM_PROVIDER,
 // ORQEN_LLM_MODEL, ORQEN_LLM_API_KEY, ORQEN_LLM_BASE_URL, ORQEN_ENV_FILE).
-// The legacy SPOOL_* names are still honoured as a fallback so existing
-// setups keep working across the rename.
 package config
 
 import (
@@ -15,8 +13,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/safefs"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/safefs"
 )
 
 // Config is the persisted global configuration (never committed; 0600).
@@ -37,13 +35,9 @@ type Resolved struct {
 	Source   string
 }
 
-// Home returns the ORQEN home directory, honouring $ORQEN_HOME (with
-// $SPOOL_HOME as a legacy fallback).
+// Home returns the ORQEN home directory, honouring $ORQEN_HOME.
 func Home() (string, error) {
 	if h := strings.TrimSpace(os.Getenv("ORQEN_HOME")); h != "" {
-		return filepath.Abs(h)
-	}
-	if h := strings.TrimSpace(os.Getenv("SPOOL_HOME")); h != "" {
 		return filepath.Abs(h)
 	}
 	home, err := os.UserHomeDir()
@@ -204,10 +198,7 @@ func envFiles() []string {
 	if h, err := Home(); err == nil {
 		files = append(files, filepath.Join(h, ".env"))
 	}
-	explicit := firstNonEmpty(
-		os.Getenv("ORQEN_ENV_FILE"),
-		os.Getenv("SPOOL_ENV_FILE"), // legacy name
-	)
+	explicit := os.Getenv("ORQEN_ENV_FILE")
 	if explicit != "" {
 		files = append(files, explicit)
 	}
@@ -218,8 +209,7 @@ func envFiles() []string {
 }
 
 // lookupEnv resolves the first non-empty value among OS env / dotenv lookups
-// for the given keys, in order. It backs the ORQEN_* variables with their
-// legacy SPOOL_* equivalents.
+// for the given keys, in order.
 func lookupEnv(dotEnv map[string]string, keys ...string) string {
 	for _, key := range keys {
 		if v, ok := os.LookupEnv(key); ok && strings.TrimSpace(v) != "" {
@@ -291,7 +281,7 @@ func Resolve() (*Resolved, error) {
 	dotEnv := LoadDotEnv(envFiles()...)
 
 	provider := NormalizeProvider(firstNonEmpty(
-		lookupEnv(dotEnv, "ORQEN_LLM_PROVIDER", "SPOOL_LLM_PROVIDER"),
+		lookupEnv(dotEnv, "ORQEN_LLM_PROVIDER"),
 		cfg.LLMProvider,
 	))
 	if provider == "" {
@@ -307,7 +297,7 @@ func Resolve() (*Resolved, error) {
 		return nil, domain.E(domain.KindConfig, "config.Resolve", "no LLM provider configured", domain.ErrNotConfigured)
 	}
 
-	model := firstNonEmpty(lookupEnv(dotEnv, "ORQEN_LLM_MODEL", "SPOOL_LLM_MODEL"), cfg.LLMModel, DefaultModel(provider))
+	model := firstNonEmpty(lookupEnv(dotEnv, "ORQEN_LLM_MODEL"), cfg.LLMModel, DefaultModel(provider))
 
 	source := "config"
 	apiKey := ""
@@ -318,7 +308,7 @@ func Resolve() (*Resolved, error) {
 	}
 	if apiKey == "" {
 		if v := firstNonEmpty(
-			lookupEnv(dotEnv, "ORQEN_LLM_API_KEY", "SPOOL_LLM_API_KEY"),
+			lookupEnv(dotEnv, "ORQEN_LLM_API_KEY"),
 			lookupEnv(dotEnv, "LLM_API_KEY"),
 		); v != "" {
 			apiKey, source = v, "env:generic"
@@ -328,7 +318,7 @@ func Resolve() (*Resolved, error) {
 		apiKey, source = cfg.LLMAPIKey, "config"
 	}
 
-	baseURL := firstNonEmpty(lookupEnv(dotEnv, "ORQEN_LLM_BASE_URL", "SPOOL_LLM_BASE_URL"), cfg.LLMBaseURL)
+	baseURL := firstNonEmpty(lookupEnv(dotEnv, "ORQEN_LLM_BASE_URL"), cfg.LLMBaseURL)
 
 	if provider != "ollama" && apiKey == "" {
 		return nil, domain.E(domain.KindConfig, "config.Resolve",

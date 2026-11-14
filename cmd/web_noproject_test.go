@@ -6,15 +6,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/agent"
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/state"
-	"github.com/monojitgoswami69/spool/internal/web"
+	"github.com/soham1105-tech/orqen/internal/agent"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/state"
+	"github.com/soham1105-tech/orqen/internal/web"
 )
 
 func seedNoProjectFixture(t *testing.T, names ...string) {
 	t.Helper()
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	for _, name := range names {
 		id := state.IDFor(name, "/tmp/"+name+"-src")
 		mgr, err := state.Ensure(id)

@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/llm"
+	"github.com/soham1105-tech/orqen/internal/llm"
 )
 
 // Tool is a schema-validated capability.

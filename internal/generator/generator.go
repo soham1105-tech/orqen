@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/safefs"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/safefs"
 )
 
 // Output is the set of generated files keyed by filename.
@@ -145,8 +145,8 @@ func WriteOutputsOptions(p *domain.Project, workDir, repoRoot string, opts Optio
 }
 
 const (
-	ignoreStart = "# spool:managed-start"
-	ignoreEnd   = "# spool:managed-end"
+	ignoreStart = "# orqen:managed-start"
+	ignoreEnd   = "# orqen:managed-end"
 )
 
 func readFileOrEmpty(root, name string) string {

@@ -12,8 +12,7 @@ func clearEnv(t *testing.T) {
 	for _, k := range []string{
 		"ORQEN_HOME", "ORQEN_LLM_PROVIDER", "ORQEN_LLM_MODEL", "ORQEN_LLM_API_KEY",
 		"ORQEN_LLM_BASE_URL", "ORQEN_ENV_FILE",
-		"SPOOL_HOME", "SPOOL_LLM_PROVIDER", "SPOOL_LLM_MODEL", "SPOOL_LLM_API_KEY",
-		"SPOOL_LLM_BASE_URL", "SPOOL_ENV_FILE", "LLM_API_KEY", "GITHUB_PAT", "GH_TOKEN",
+		"LLM_API_KEY", "GITHUB_PAT", "GH_TOKEN",
 		"GEMINI_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GROQ_API_KEY",
 	} {
 		t.Setenv(k, "")
@@ -49,7 +48,7 @@ EMPTY=
 
 func TestResolveFromEnvVarFallback(t *testing.T) {
 	clearEnv(t)
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	t.Setenv("GEMINI_API_KEY", "env-key-123")
 
 	r, err := Resolve()
@@ -70,9 +69,9 @@ func TestResolveFromEnvVarFallback(t *testing.T) {
 func TestResolveFromDotEnv(t *testing.T) {
 	clearEnv(t)
 	home := t.TempDir()
-	t.Setenv("SPOOL_HOME", home)
+	t.Setenv("ORQEN_HOME", home)
 	t.Setenv("HOME", home)
-	dotenv := "OPENAI_API_KEY=dotenv-key\nSPOOL_LLM_PROVIDER=openai\nSPOOL_LLM_MODEL=gpt-4o\n"
+	dotenv := "OPENAI_API_KEY=dotenv-key\nORQEN_LLM_PROVIDER=openai\nORQEN_LLM_MODEL=gpt-4o\n"
 	if err := os.WriteFile(filepath.Join(home, ".env"), []byte(dotenv), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -88,7 +87,7 @@ func TestResolveFromDotEnv(t *testing.T) {
 
 func TestResolveFromConfigFile(t *testing.T) {
 	clearEnv(t)
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	cfg := &Config{LLMProvider: "gemini", LLMModel: "gemini-3.5-flash-lite", LLMAPIKey: "cfg-key"}
 	if err := Save(cfg); err != nil {
 		t.Fatal(err)
@@ -104,7 +103,7 @@ func TestResolveFromConfigFile(t *testing.T) {
 
 func TestResolveUnconfigured(t *testing.T) {
 	clearEnv(t)
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	if _, err := Resolve(); err == nil {
 		t.Fatal("expected unconfigured error")
 	}
@@ -116,7 +115,7 @@ func TestSavePermissions(t *testing.T) {
 	}
 	clearEnv(t)
 	home := t.TempDir()
-	t.Setenv("SPOOL_HOME", home)
+	t.Setenv("ORQEN_HOME", home)
 	if err := Save(&Config{LLMProvider: "gemini", LLMModel: "m", LLMAPIKey: "k"}); err != nil {
 		t.Fatal(err)
 	}
@@ -147,33 +146,31 @@ func TestValidProjectID(t *testing.T) {
 
 func TestProjectDirRejectsTraversal(t *testing.T) {
 	clearEnv(t)
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	if _, err := ProjectDir("../escape"); err == nil {
 		t.Fatal("expected rejection")
 	}
 }
 
-func TestORQENHomeWinsOverLegacySPOOLHome(t *testing.T) {
+func TestORQENHomeEnvIsHonoured(t *testing.T) {
 	clearEnv(t)
 	want, err := filepath.Abs(t.TempDir())
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Setenv("ORQEN_HOME", want)
-	t.Setenv("SPOOL_HOME", t.TempDir())
 	h, err := Home()
 	if err != nil {
 		t.Fatal(err)
 	}
 	if h != want {
-		t.Errorf("Home() = %q, want %q (ORQEN_HOME must win)", h, want)
+		t.Errorf("Home() = %q, want %q (ORQEN_HOME must be honoured)", h, want)
 	}
 }
 
 func TestDefaultHomeIsOrqen(t *testing.T) {
 	clearEnv(t)
 	t.Setenv("ORQEN_HOME", "")
-	t.Setenv("SPOOL_HOME", "")
 	home, err := os.UserHomeDir()
 	if err != nil {
 		t.Skip("no user home on this machine")
@@ -187,46 +184,17 @@ func TestDefaultHomeIsOrqen(t *testing.T) {
 	}
 }
 
-func TestLegacySPOOLHomeStillWorks(t *testing.T) {
-	clearEnv(t)
-	want := t.TempDir()
-	t.Setenv("SPOOL_HOME", want)
-	h, err := Home()
-	if err != nil {
-		t.Fatal(err)
-	}
-	if h != want {
-		t.Errorf("Home() = %q, want %q", h, want)
-	}
-}
-
-func TestORQENLLMVarsTakePrecedence(t *testing.T) {
+func TestORQENLLMVarsResolve(t *testing.T) {
 	clearEnv(t)
 	t.Setenv("ORQEN_HOME", t.TempDir())
 	t.Setenv("ORQEN_LLM_PROVIDER", "openai")
 	t.Setenv("ORQEN_LLM_API_KEY", "orqen-key")
-	t.Setenv("SPOOL_LLM_PROVIDER", "groq")
-	t.Setenv("SPOOL_LLM_API_KEY", "spool-key")
 	r, err := Resolve()
 	if err != nil {
 		t.Fatalf("Resolve: %v", err)
 	}
 	if r.Provider != "openai" || r.APIKey != "orqen-key" {
-		t.Errorf("ORQEN_* must win: got provider=%q key=%q", r.Provider, r.APIKey)
-	}
-}
-
-func TestSPOOLLLMVarsStillResolve(t *testing.T) {
-	clearEnv(t)
-	t.Setenv("ORQEN_HOME", t.TempDir())
-	t.Setenv("SPOOL_LLM_PROVIDER", "openai")
-	t.Setenv("SPOOL_LLM_API_KEY", "spool-key")
-	r, err := Resolve()
-	if err != nil {
-		t.Fatalf("Resolve: %v", err)
-	}
-	if r.Provider != "openai" || r.APIKey != "spool-key" {
-		t.Errorf("legacy SPOOL_* must still resolve: got provider=%q key=%q", r.Provider, r.APIKey)
+		t.Errorf("ORQEN_* must resolve: got provider=%q key=%q", r.Provider, r.APIKey)
 	}
 }
 

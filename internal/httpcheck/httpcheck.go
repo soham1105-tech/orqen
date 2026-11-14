@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 // Status is the probe outcome.

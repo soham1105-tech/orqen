@@ -1,4 +1,4 @@
-module github.com/monojitgoswami69/spool
+module github.com/soham1105-tech/orqen
 
 go 1.27.1
 

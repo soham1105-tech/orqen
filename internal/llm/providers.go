@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/domain"
 )
 
 // --- OpenAI / Groq (chat completions) --------------------------------------

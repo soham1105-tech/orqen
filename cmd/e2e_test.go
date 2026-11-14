@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/state"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/state"
 )
 
 func writeFixture(t *testing.T, root, rel, content string) {
@@ -23,7 +23,7 @@ func writeFixture(t *testing.T, root, rel, content string) {
 }
 
 func TestInitPipelineNoRunE2E(t *testing.T) {
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	repo := t.TempDir()
 	writeFixture(t, repo, "package.json", `{
 		"name": "demo-web",
@@ -119,7 +119,7 @@ dependencies = ["fastapi>=0.110", "uvicorn[standard]>=0.29", "psycopg2-binary>=2
 }
 
 func TestUpdatePreservesHostPortsE2E(t *testing.T) {
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	repo := t.TempDir()
 	writeFixture(t, repo, "package.json", `{"name":"demo-web","dependencies":{"next":"16.0.0"},"scripts":{"build":"next build","start":"next start"}}`)
 	writeFixture(t, repo, "services/api/pyproject.toml", "[project]\nname=\"demo-api\"\ndependencies=[\"fastapi\",\"psycopg2-binary\"]\n")
@@ -182,7 +182,7 @@ func TestUpdatePreservesHostPortsE2E(t *testing.T) {
 }
 
 func TestAskOnboardNoRunE2E(t *testing.T) {
-	t.Setenv("SPOOL_HOME", t.TempDir())
+	t.Setenv("ORQEN_HOME", t.TempDir())
 	repo := t.TempDir()
 	writeFixture(t, repo, "package.json", `{"name":"ask-onboard","dependencies":{"next":"16"},"scripts":{"build":"next build","start":"next start"}}`)
 

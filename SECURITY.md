@@ -27,4 +27,4 @@ recorded with before/after SHA-256 in `repairs.json`.
 
 ## Reporting
 Open a private security advisory at
-https://github.com/monojitgoswami69/spool/security/advisories/new.
+https://github.com/soham1105-tech/orqen/security/advisories/new.

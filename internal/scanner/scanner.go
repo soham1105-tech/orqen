@@ -11,12 +11,12 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/scanner/fsutil"
-	"github.com/monojitgoswami69/spool/internal/scanner/golang"
-	"github.com/monojitgoswami69/spool/internal/scanner/node"
-	"github.com/monojitgoswami69/spool/internal/scanner/python"
-	"github.com/monojitgoswami69/spool/internal/scanner/rust"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/scanner/fsutil"
+	"github.com/soham1105-tech/orqen/internal/scanner/golang"
+	"github.com/soham1105-tech/orqen/internal/scanner/node"
+	"github.com/soham1105-tech/orqen/internal/scanner/python"
+	"github.com/soham1105-tech/orqen/internal/scanner/rust"
 )
 
 // Result is the outcome of a scan.
@@ -37,7 +37,7 @@ var ignoredDirs = map[string]bool{
 	"coverage": true, "venv": true, ".venv": true, "__pycache__": true,
 	"target": true, "bin": true, "obj": true, ".idea": true, ".vscode": true,
 	"db-scripts": true, "demo-data": true, "contracts": true, "hooks": true,
-	"types": true, "components": true, "migrations": true, ".spool": true, "cookiecutter": true,
+	"types": true, "components": true, "migrations": true, ".orqen": true, "cookiecutter": true,
 	"examples": true, "example": true, "samples": true, "sample": true,
 	"demo": true, "demos": true, "tutorials": true, "tutorial": true,
 	"benchmarks": true, "benchmark": true, "playground": true,

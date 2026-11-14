@@ -6,7 +6,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/monojitgoswami69/spool/internal/agent"
+	"github.com/soham1105-tech/orqen/internal/agent"
 )
 
 // ProjectView is the sidebar/project summary.

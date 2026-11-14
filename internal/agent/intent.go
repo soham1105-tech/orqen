@@ -8,12 +8,12 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/monojitgoswami69/spool/internal/domain"
-	"github.com/monojitgoswami69/spool/internal/envvar"
-	"github.com/monojitgoswami69/spool/internal/graph"
-	"github.com/monojitgoswami69/spool/internal/healer"
-	"github.com/monojitgoswami69/spool/internal/httpcheck"
-	"github.com/monojitgoswami69/spool/internal/llm"
+	"github.com/soham1105-tech/orqen/internal/domain"
+	"github.com/soham1105-tech/orqen/internal/envvar"
+	"github.com/soham1105-tech/orqen/internal/graph"
+	"github.com/soham1105-tech/orqen/internal/healer"
+	"github.com/soham1105-tech/orqen/internal/httpcheck"
+	"github.com/soham1105-tech/orqen/internal/llm"
 )
 
 // IntentKind is a stable, testable user intent.
@@ -200,8 +200,7 @@ func ParseIntent(text string, ictx IntentContext) Intent {
 func isGreeting(lower string) bool {
 	s := strings.TrimRight(strings.TrimSpace(lower), "!?., ")
 	switch s {
-	case "what's up", "whats up", "wassup", "sup", "hi spool", "hello spool", "hey spool",
-		"hi orqen", "hello orqen", "hey orqen":
+	case "what's up", "whats up", "wassup", "sup", "hi orqen", "hello orqen", "hey orqen":
 		return true
 	}
 	words := strings.Fields(s)
@@ -211,7 +210,7 @@ func isGreeting(lower string) bool {
 	for _, w := range words {
 		switch w {
 		case "hi", "hello", "hey", "yo", "howdy", "hola", "greetings", "thanks", "thank",
-			"you", "spool", "orqen", "there", "all", "good", "morning", "afternoon", "evening", "friends":
+			"you", "orqen", "there", "all", "good", "morning", "afternoon", "evening", "friends":
 		default:
 			return false
 		}
