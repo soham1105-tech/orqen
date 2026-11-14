@@ -8,8 +8,10 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/soham1105-tech/orqen/internal/domain"
 	"github.com/soham1105-tech/orqen/internal/scanner/fsutil"
@@ -27,14 +29,12 @@ type Result struct {
 	Intel     domain.RepoIntel  `json:"intel"`
 }
 
-var groupingDirs = map[string]bool{"services": true, "apps": true, "packages": true}
-
 var ignoredDirs = map[string]bool{
 	"node_modules": true, ".git": true, ".next": true, ".nuxt": true, ".svelte-kit": true,
 	"dist": true, "build": true, "out": true, "vendor": true, "legacy": true,
 	"public": true, "static": true, "assets": true, "docs": true, "documentation": true,
 	"test": true, "tests": true, "__tests__": true, "scripts": true,
-	"coverage": true, "venv": true, ".venv": true, "__pycache__": true,
+	"coverage": true, "env": true, "venv": true, ".venv": true, "__pycache__": true,
 	"target": true, "bin": true, "obj": true, ".idea": true, ".vscode": true,
 	"db-scripts": true, "demo-data": true, "contracts": true, "hooks": true,
 	"types": true, "components": true, "migrations": true, ".orqen": true, "cookiecutter": true,
@@ -116,59 +116,21 @@ func Scan(root string) (*Result, error) {
 		add(rust.Detect(".", abs))
 	}
 
-	scanDir := func(rel string) {
-		rel = filepath.ToSlash(filepath.Clean(rel))
-		if rel == "." || seen[rel+"|"+string(domain.LangNode)] && seen[rel+"|"+string(domain.LangPython)] {
-			return
-		}
-		full := filepath.Join(abs, filepath.FromSlash(rel))
-		if pkg, err := node.ParsePackageJSON(full); err == nil && node.IsRunnableService(pkg) {
-			pm, ver := node.DetectPackageManager(full, pkg)
-			svc := node.Detect(rel, full, pkg, pm)
-			svc.PackageManagerVersion = ver
-			add(svc)
-		}
-		if python.IsPythonDir(full) {
-			pyproj, _ := python.ParsePyProject(full)
-			pm := python.DetectPackageManager(full, pyproj)
-			add(python.Detect(rel, full, pyproj, pm))
-		}
-		if golang.IsGoDir(full) {
-			add(golang.Detect(rel, full))
-		}
-		if rust.IsRustDir(full) {
-			add(rust.Detect(rel, full))
-		}
-	}
-
 	entries, err := os.ReadDir(abs)
 	if err != nil {
 		return nil, domain.E(domain.KindIO, "scanner.Scan", "read dir", err)
 	}
 	sort.Slice(entries, func(i, j int) bool { return entries[i].Name() < entries[j].Name() })
-	for _, e := range entries {
-		if !e.IsDir() {
-			continue
+
+	// Collect every directory worth inspecting, in a deterministic order. The
+	// directories are independent, so they can be scanned concurrently with a
+	// bounded worker pool; results are merged back in collection order so the
+	// final service list stays reproducible.
+	targets := collectScanTargets(abs, entries)
+	for _, found := range scanDirs(abs, targets) {
+		for _, svc := range found {
+			add(svc)
 		}
-		name := e.Name()
-		if skipDirName(name) {
-			continue
-		}
-		if groupingDirs[name] {
-			children, err := os.ReadDir(filepath.Join(abs, name))
-			if err != nil {
-				continue
-			}
-			sort.Slice(children, func(i, j int) bool { return children[i].Name() < children[j].Name() })
-			for _, c := range children {
-				if !c.IsDir() || skipDirName(c.Name()) {
-					continue
-				}
-				scanDir(name + "/" + c.Name())
-			}
-			continue
-		}
-		scanDir(name)
 	}
 
 	hasRoot := false
@@ -213,6 +175,126 @@ func Scan(root string) (*Result, error) {
 	sort.Slice(langs, func(i, j int) bool { return langs[i] < langs[j] })
 
 	return &Result{Root: abs, Services: services, Languages: langs, Intel: intel}, nil
+}
+
+// maxScanWorkers bounds directory-scan concurrency so a huge repository cannot
+// exhaust file descriptors or CPU.
+const maxScanWorkers = 8
+
+// maxScanDepth bounds how deep nested applications are searched for. Depth 1 is
+// a top-level directory, so "services/api" (depth 2) and "apps/web/packages/ui"
+// (depth 3) are discovered while a deep source tree is not walked needlessly.
+const maxScanDepth = 3
+
+// collectScanTargets walks the repository breadth-first, up to maxScanDepth,
+// and returns every candidate application directory in deterministic order.
+// Detection still decides what is a runnable service, so intermediate
+// directories that hold no manifest are simply cheap no-ops.
+func collectScanTargets(root string, entries []os.DirEntry) []string {
+	var targets []string
+	var walk func(dir string, rel string, depth int)
+	walk = func(dir, rel string, depth int) {
+		children, err := os.ReadDir(dir)
+		if err != nil {
+			return
+		}
+		sort.Slice(children, func(i, j int) bool { return children[i].Name() < children[j].Name() })
+		for _, c := range children {
+			if !c.IsDir() || skipDirName(c.Name()) {
+				continue
+			}
+			childRel := c.Name()
+			if rel != "" {
+				childRel = rel + "/" + c.Name()
+			}
+			targets = append(targets, childRel)
+			if depth < maxScanDepth {
+				walk(filepath.Join(dir, c.Name()), childRel, depth+1)
+			}
+		}
+	}
+	for _, e := range entries {
+		if !e.IsDir() || skipDirName(e.Name()) {
+			continue
+		}
+		targets = append(targets, e.Name())
+		if maxScanDepth > 1 {
+			walk(filepath.Join(root, e.Name()), e.Name(), 2)
+		}
+	}
+	return targets
+}
+
+// scanDirs inspects each relative directory and returns the detected services in
+// the same order as dirs. Detection of separate directories shares no state, so
+// it is safe to run concurrently; the ordering guarantee keeps output stable.
+func scanDirs(root string, dirs []string) [][]*domain.Service {
+	out := make([][]*domain.Service, len(dirs))
+	if len(dirs) == 0 {
+		return out
+	}
+	workers := runtime.NumCPU()
+	if workers > maxScanWorkers {
+		workers = maxScanWorkers
+	}
+	if workers > len(dirs) {
+		workers = len(dirs)
+	}
+	if workers <= 1 {
+		for i, dir := range dirs {
+			out[i] = scanDirOnce(root, dir)
+		}
+		return out
+	}
+
+	var wg sync.WaitGroup
+	jobs := make(chan int)
+	for w := 0; w < workers; w++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for i := range jobs {
+				out[i] = scanDirOnce(root, dirs[i])
+			}
+		}()
+	}
+	for i := range dirs {
+		jobs <- i
+	}
+	close(jobs)
+	wg.Wait()
+	return out
+}
+
+// scanDirOnce runs every language detector against one directory.
+func scanDirOnce(root, rel string) []*domain.Service {
+	rel = filepath.ToSlash(filepath.Clean(rel))
+	full := filepath.Join(root, filepath.FromSlash(rel))
+	var found []*domain.Service
+	if pkg, err := node.ParsePackageJSON(full); err == nil && node.IsRunnableService(pkg) {
+		pm, ver := node.DetectPackageManager(full, pkg)
+		svc := node.Detect(rel, full, pkg, pm)
+		svc.PackageManagerVersion = ver
+		found = append(found, svc)
+	}
+	if python.IsPythonDir(full) {
+		pyproj, _ := python.ParsePyProject(full)
+		pm := python.DetectPackageManager(full, pyproj)
+		if svc := python.Detect(rel, full, pyproj, pm); svc != nil {
+			found = append(found, svc)
+		}
+	}
+	if golang.IsGoDir(full) {
+		if svc := golang.Detect(rel, full); svc != nil {
+			found = append(found, svc)
+		}
+	}
+	if rust.IsRustDir(full) {
+		if svc := rust.Detect(rel, full); svc != nil {
+			found = append(found, svc)
+		}
+	}
+	return found
 }
 
 func normalizeNames(services []*domain.Service) {
@@ -298,7 +380,10 @@ func isHex8(s string) bool {
 		return false
 	}
 	for _, r := range s {
-		if !(r >= '0' && r <= '9' || r >= 'a' && r <= 'f') {
+		switch {
+		case r >= '0' && r <= '9':
+		case r >= 'a' && r <= 'f':
+		default:
 			return false
 		}
 	}
@@ -310,7 +395,7 @@ func readLimited(path string, max int64) string {
 	if err != nil {
 		return ""
 	}
-	defer f.Close()
+	defer func() { _ = f.Close() }()
 	data, err := io.ReadAll(io.LimitReader(f, max))
 	if err != nil {
 		return ""

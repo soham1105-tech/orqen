@@ -378,7 +378,7 @@ func findFlaskApp(dir string) string {
 
 func hasPyEntry(dir string) bool {
 	for _, c := range []string{
-		"main.py", "app.py", "server.py", "run.py", "asgi.py", "wsgi.py", "manage.py",
+		"main.py", "app.py", "server.py", "run.py", "asgi.py", "wsgi.py", "manage.py", "cli.py",
 		"app/main.py", "src/main.py", "src/app.py", "src/server.py", "cmd/main.py",
 	} {
 		if fsutil.Exists(filepath.Join(dir, filepath.FromSlash(c))) {
@@ -540,7 +540,17 @@ func firstNonEmpty(vals ...string) string {
 
 // IsPythonDir reports whether dir looks like a Python project.
 func IsPythonDir(dir string) bool {
-	for _, f := range []string{"pyproject.toml", "requirements.txt", "Pipfile", "manage.py", "setup.py"} {
+	for _, f := range []string{
+		"pyproject.toml",
+		"requirements.txt",
+		"requirements-dev.txt",
+		"Pipfile",
+		"setup.py",
+		"setup.cfg",
+		"poetry.lock",
+		"uv.lock",
+		"tox.ini",
+	} {
 		if fsutil.Exists(filepath.Join(dir, f)) {
 			return true
 		}
