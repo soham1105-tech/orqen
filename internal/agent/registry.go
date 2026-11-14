@@ -1,4 +1,4 @@
-// Package agent implements Spool's conversational agent harness: a typed tool
+// Package agent implements ORQEN's conversational agent harness: a typed tool
 // registry, a bounded state machine, and blast-radius guardrails. Every
 // filesystem capability is jailed and every mutating action is gated.
 package agent

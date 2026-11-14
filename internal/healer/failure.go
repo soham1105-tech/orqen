@@ -49,7 +49,7 @@ type Failure struct {
 	EnvRefs     []string `json:"env_refs,omitempty"`
 	PortRefs    []string `json:"port_refs,omitempty"`
 	Progression string   `json:"progression,omitempty"`
-	// Source is true for application-source compilation failures, which Spool
+	// Source is true for application-source compilation failures, which ORQEN
 	// cannot repair by editing generated manifests.
 	Source bool `json:"source,omitempty"`
 }

@@ -46,7 +46,7 @@ func runConfig(cmd *cobra.Command, args []string) error {
 			if isInteractive() {
 				return runConfigPanel()
 			}
-			return fmt.Errorf("usage: spool config set <provider|model|api-key|base-url|github-pat> <value>")
+			return fmt.Errorf("usage: orqen config set <provider|model|api-key|base-url|github-pat> <value>")
 		}
 		return setConfig(args[1], strings.Join(args[2:], " "))
 	default:
@@ -97,7 +97,7 @@ func showConfig() error {
 		{"base url", base},
 		{"resolved from", source},
 		{"config file", cfgPath},
-		{"spool home", home},
+		{"orqen home", home},
 		{"repos", repos},
 		{"projects", projects},
 		{"dotenv files", strings.Join(config.DotEnvFiles(), ", ")},
@@ -105,7 +105,7 @@ func showConfig() error {
 	logf("%s", ui.Table([]string{"Setting", "Value"}, rows, "configuration"))
 	if rerr != nil {
 		logf("%s", ui.WarningLine("LLM not configured: "+rerr.Error()))
-		logf("%s", ui.InfoLine("set a key with: spool config set api-key <value>  (or export GEMINI_API_KEY)"))
+		logf("%s", ui.InfoLine("set a key with: orqen config set api-key <value>  (or export GEMINI_API_KEY)"))
 	}
 	return nil
 }
@@ -150,6 +150,6 @@ func setConfig(key, value string) error {
 			}
 		}
 	}
-	logf("%s", ui.MutedStyle.Render("verify with: spool doctor"))
+	logf("%s", ui.MutedStyle.Render("verify with: orqen doctor"))
 	return nil
 }

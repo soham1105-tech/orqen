@@ -17,7 +17,7 @@ import (
 const (
 	// DefaultHost is the loopback interface probed by default.
 	DefaultHost = "0.0.0.0"
-	// MinPort is the lowest unprivileged port Spool will publish.
+	// MinPort is the lowest unprivileged port ORQEN will publish.
 	MinPort = 1024
 	// MaxPort is the highest valid TCP port.
 	MaxPort = 65535
@@ -119,7 +119,7 @@ func IsFree(port int) bool { return IsFreeOn(DefaultHost, port) }
 
 // IsFreeOn reports whether host:port can be bound to right now. There is an
 // unavoidable TOCTOU window between this probe and the real bind; callers
-// should use Allocator to also serialize Spool's own allocations.
+// should use Allocator to also serialize ORQEN's own allocations.
 func IsFreeOn(host string, port int) bool {
 	if port < 1 || port > MaxPort {
 		return false

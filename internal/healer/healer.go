@@ -1,4 +1,4 @@
-// Package healer implements Spool's closed-loop build and runtime repair. It
+// Package healer implements ORQEN's closed-loop build and runtime repair. It
 // applies deterministic rules first, then an invariant-guarded LLM repair that
 // can only touch generated Dockerfiles and docker-compose.yml inside the work
 // directory jail. Every applied patch is recorded with SHA-256 provenance.
@@ -200,7 +200,7 @@ func (h *Healer) Heal(ctx context.Context, initialOutput, failingService string)
 		}
 		if !applied {
 			if f.Source {
-				res.Summary = "source compilation error (Spool repairs manifests, not application source)"
+				res.Summary = "source compilation error (ORQEN repairs manifests, not application source)"
 				res.FinalLog = f.RelevantLog
 				return rollback(res), sourceFailureError(f)
 			}
@@ -820,7 +820,7 @@ func (h *Healer) repairPrompt(svcName, dfName string, f Failure, output, df, com
 	return b.String()
 }
 
-const repairSystemPrompt = `You are Spool's senior build-reliability engineer. You repair generated container manifests, never application source code. You are precise, conservative, and return only valid JSON.`
+const repairSystemPrompt = `You are ORQEN's senior build-reliability engineer. You repair generated container manifests, never application source code. You are precise, conservative, and return only valid JSON.`
 
 // Tail returns the last n lines of s.
 func sourceFailureError(f Failure) error {
@@ -829,8 +829,8 @@ func sourceFailureError(f Failure) error {
 		detail = f.FileRefs[0] + ": " + detail
 	}
 	return domain.E(domain.KindValidation, "healer.Heal",
-		"source compilation error (Spool repairs generated manifests, not application source): "+detail+
-			". Fix the source, then run `spool heal <project>`.", nil)
+		"source compilation error (ORQEN repairs generated manifests, not application source): "+detail+
+			". Fix the source, then run `orqen heal <project>`.", nil)
 }
 
 func Tail(s string, n int) string {

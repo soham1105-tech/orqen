@@ -1,4 +1,4 @@
-// Package web implements Spool's local web control plane: a minimal HTTP
+// Package web implements ORQEN's local web control plane: a minimal HTTP
 // server, persistent chat store, and an embedded single-page agent console.
 package web
 

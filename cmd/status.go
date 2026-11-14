@@ -41,7 +41,7 @@ func listProjects(ctx context.Context) error {
 		return err
 	}
 	if len(managers) == 0 {
-		logf("%s", ui.MutedStyle.Render("No projects yet. Run `spool init <path-or-url>`."))
+		logf("%s", ui.MutedStyle.Render("No projects yet. Run `orqen init <path-or-url>`."))
 		return nil
 	}
 	canQuery := docker.Available() && docker.DaemonRunning(ctx)

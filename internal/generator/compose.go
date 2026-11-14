@@ -69,7 +69,7 @@ func GenerateComposeFile(p *domain.Project, envFile string, opts ...Options) (st
 	}
 	network := p.NetworkName
 	if network == "" {
-		network = "spool-net"
+		network = "orqen-net"
 	}
 	cf := composeFile{
 		Services: make(map[string]composeService),
@@ -187,7 +187,7 @@ func GenerateComposeFile(p *domain.Project, envFile string, opts ...Options) (st
 func composeName(projectID, svc string) string {
 	pid := projectID
 	if pid == "" {
-		pid = "spool"
+		pid = "orqen"
 	}
 	return pid + "-" + svc
 }

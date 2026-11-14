@@ -1,4 +1,4 @@
-// Package cmd implements Spool's command-line interface.
+// Package cmd implements ORQEN's command-line interface.
 package cmd
 
 import (
@@ -25,9 +25,9 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:           "spool",
+	Use:           "orqen",
 	Short:         "Autonomous infrastructure control plane and self-healing DevOps agent",
-	Long:          "Spool analyzes any repository, generates a portable container stack, orchestrates it, verifies health, and heals failures with a bounded AI agent.",
+	Long:          "ORQEN analyzes any repository, generates a portable container stack, orchestrates it, runs its tests in-container, verifies health, and heals failures with a bounded AI agent.",
 	Version:       Version,
 	SilenceErrors: true,
 	SilenceUsage:  true,
@@ -44,7 +44,7 @@ func Execute() {
 		}
 		config.LoadEnvIntoProcess()
 	}
-	rootCmd.SetVersionTemplate(fmt.Sprintf("Spool %s (built %s)\n", Version, BuildTime))
+	rootCmd.SetVersionTemplate(fmt.Sprintf("ORQEN %s (built %s)\n", Version, BuildTime))
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, ui.ErrorLine(err.Error()))
@@ -61,6 +61,7 @@ func init() {
 	rootCmd.AddCommand(initCmd)
 	rootCmd.AddCommand(chatCmd)
 	rootCmd.AddCommand(upCmd)
+	rootCmd.AddCommand(testRunCmd)
 	rootCmd.AddCommand(downCmd)
 	rootCmd.AddCommand(nukeCmd)
 	rootCmd.AddCommand(healCmd)

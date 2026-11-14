@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -105,7 +106,7 @@ dependencies = ["fastapi>=0.110", "uvicorn[standard]>=0.29", "psycopg2-binary>=2
 	if err != nil {
 		t.Fatal(err)
 	}
-	if info.Mode().Perm() != 0o600 {
+	if runtime.GOOS != "windows" && info.Mode().Perm() != 0o600 {
 		t.Fatalf(".env mode = %o", info.Mode().Perm())
 	}
 	env, _ := os.ReadFile(envPath)

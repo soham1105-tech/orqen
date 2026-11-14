@@ -5,6 +5,9 @@
 
 # Build artifacts
 spool
+spool.exe
+orqen
+orqen.exe
 dist/
 bin/
 

@@ -44,7 +44,7 @@ func runAsk(cmd *cobra.Command, args []string) error {
 			// The agent can onboard a repo from a completely clean slate.
 			mgr, lock = nil, nil
 		} else if errors.Is(err, domain.ErrNoProjects) {
-			return fmt.Errorf("no projects initialized; ask me to `onboard <path-or-url>` or run `spool init`")
+			return fmt.Errorf("no projects initialized; ask me to `onboard <path-or-url>` or run `orqen init`")
 		} else {
 			return err
 		}

@@ -238,7 +238,7 @@ func (g *Graph) StartOrder() []string {
 // Render returns a deterministic plain-text topology summary.
 func (g *Graph) Render() string {
 	var b strings.Builder
-	b.WriteString("Spool topology\n")
+	b.WriteString("ORQEN topology\n")
 	b.WriteString("Applications\n")
 	anyApp := false
 	for _, n := range g.Nodes {

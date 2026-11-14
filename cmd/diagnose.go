@@ -46,19 +46,19 @@ func printFailureReport(mgr *state.Manager, lock *domain.Lock, res *healer.Resul
 		id = lock.ProjectID
 	}
 	for _, line := range []string{
-		"spool logs " + id,
-		"spool heal " + id,
-		"spool env " + id,
-		"spool explain " + id,
+		"orqen logs " + id,
+		"orqen heal " + id,
+		"orqen env " + id,
+		"orqen explain " + id,
 	} {
 		logf("  %s", line)
 	}
-	logf("%s", ui.InfoLine("If no LLM is configured, set one with: spool config set api-key <key>"))
+	logf("%s", ui.InfoLine("If no LLM is configured, set one with: orqen config set api-key <key>"))
 }
 
 func writeFailureRecord(mgr *state.Manager, res *healer.Result) {
 	var b strings.Builder
-	b.WriteString("Spool failure record\n")
+	b.WriteString("ORQEN failure record\n")
 	b.WriteString("time: " + time.Now().UTC().Format(time.RFC3339) + "\n")
 	b.WriteString("summary: " + res.Summary + "\n")
 	for _, a := range res.Attempts {

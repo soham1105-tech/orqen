@@ -1,4 +1,4 @@
-// Package domain holds Spool's shared vocabulary: pure data types, constants,
+// Package domain holds ORQEN's shared vocabulary: pure data types, constants,
 // interfaces, and the typed error taxonomy. It imports nothing from the rest of
 // the application so every other package may depend on it freely.
 package domain
@@ -104,25 +104,28 @@ const (
 
 // Service is a detected runnable application service.
 type Service struct {
-	Name                  string            `json:"name"`
-	Path                  string            `json:"path"` // relative to repository root
-	Language              Language          `json:"language"`
-	Framework             Framework         `json:"framework"`
-	PackageManager        PackageManager    `json:"package_manager"`
-	PackageManagerVersion string            `json:"package_manager_version,omitempty"`
-	RuntimeVersion        string            `json:"runtime_version,omitempty"`
-	BuildCmd              string            `json:"build_cmd,omitempty"`
-	StartCmd              string            `json:"start_cmd"`
-	DefaultPort           int               `json:"default_port"`
-	Port                  int               `json:"port"`      // container-internal port
-	HostPort              int               `json:"host_port"` // host-published port
-	IsSPA                 bool              `json:"is_spa"`
-	IsWorker              bool              `json:"is_worker"`
-	Env                   map[string]string `json:"env,omitempty"`
-	DependsOn             []string          `json:"depends_on,omitempty"`
-	DockerfilePath        string            `json:"dockerfile_path,omitempty"`
-	Dependencies          []string          `json:"dependencies,omitempty"`
-	WorkspaceMember       bool              `json:"workspace_member,omitempty"`
+	Name                  string         `json:"name"`
+	Path                  string         `json:"path"` // relative to repository root
+	Language              Language       `json:"language"`
+	Framework             Framework      `json:"framework"`
+	PackageManager        PackageManager `json:"package_manager"`
+	PackageManagerVersion string         `json:"package_manager_version,omitempty"`
+	RuntimeVersion        string         `json:"runtime_version,omitempty"`
+	BuildCmd              string         `json:"build_cmd,omitempty"`
+	StartCmd              string         `json:"start_cmd"`
+	// TestCmd is the in-container command that runs this service's tests
+	// (detected by the scanner). Empty when no test runner is identifiable.
+	TestCmd         string            `json:"test_cmd,omitempty"`
+	DefaultPort     int               `json:"default_port"`
+	Port            int               `json:"port"`      // container-internal port
+	HostPort        int               `json:"host_port"` // host-published port
+	IsSPA           bool              `json:"is_spa"`
+	IsWorker        bool              `json:"is_worker"`
+	Env             map[string]string `json:"env,omitempty"`
+	DependsOn       []string          `json:"depends_on,omitempty"`
+	DockerfilePath  string            `json:"dockerfile_path,omitempty"`
+	Dependencies    []string          `json:"dependencies,omitempty"`
+	WorkspaceMember bool              `json:"workspace_member,omitempty"`
 	// ExistingDockerfile is a repo-relative Dockerfile found in the source.
 	ExistingDockerfile string `json:"existing_dockerfile,omitempty"`
 	// BuildContext is the repo-relative context for ExistingDockerfile.
@@ -239,7 +242,7 @@ type RepairRecord struct {
 	Summary       string    `json:"summary,omitempty"`
 }
 
-// Lock is the persisted project state written to ~/.spool/projects/<id>/spool.lock.json.
+// Lock is the persisted project state written to ~/.orqen/projects/<id>/orqen.lock.json.
 type Lock struct {
 	Version       string          `json:"version"`
 	Project       string          `json:"project"`

@@ -21,7 +21,7 @@ const (
 	KindIO         ErrorKind = "io"
 )
 
-// Error is Spool's typed error. It carries a stable kind, the operation that
+// Error is ORQEN's typed error. It carries a stable kind, the operation that
 // failed, and an optional wrapped cause so callers can branch on Kind while
 // preserving the full chain for debugging.
 type Error struct {
@@ -68,7 +68,7 @@ func IsKind(err error, k ErrorKind) bool {
 
 // Sentinel errors used across packages.
 var (
-	ErrNoProjects      = errors.New("no spool projects found")
+	ErrNoProjects      = errors.New("no orqen projects found")
 	ErrUnsafePath      = errors.New("path escapes the permitted root")
 	ErrPortUnavailable = errors.New("no free port available")
 	ErrNotConfigured   = errors.New("LLM provider is not configured")
@@ -93,5 +93,5 @@ func (e *UnknownProjectError) Error() string {
 type MissingLockError struct{ Project string }
 
 func (e *MissingLockError) Error() string {
-	return fmt.Sprintf("project %q is missing its spool.lock.json (re-run `spool init`)", e.Project)
+	return fmt.Sprintf("project %q is missing its orqen.lock.json (re-run `orqen init`)", e.Project)
 }

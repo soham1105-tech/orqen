@@ -31,7 +31,7 @@ func newTestChatModel() *chatModel {
 func TestChatViewModernLayout(t *testing.T) {
 	m := newTestChatModel()
 	out := m.View()
-	for _, want := range []string{"◆ Spool", "demo", "gemini/gemini-3.5-flash-lite", "› You", "Diagnosis", "enter send"} {
+	for _, want := range []string{"◆ ORQEN", "demo", "gemini/gemini-3.5-flash-lite", "› You", "Diagnosis", "enter send"} {
 		if !strings.Contains(out, want) {
 			t.Errorf("chat view missing %q:\n%s", want, out)
 		}

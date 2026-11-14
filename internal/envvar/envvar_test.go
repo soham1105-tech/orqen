@@ -3,6 +3,7 @@ package envvar
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -167,6 +168,9 @@ func TestRenderEnvDeterministicAndSorted(t *testing.T) {
 }
 
 func TestWriteEnvFilePermissions(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("unix-style 0600 file modes are not enforced on windows")
+	}
 	p := filepath.Join(t.TempDir(), ".env")
 	if err := WriteEnvFile(p, map[string]string{"A": "1"}); err != nil {
 		t.Fatal(err)

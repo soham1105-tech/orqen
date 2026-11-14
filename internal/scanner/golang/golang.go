@@ -62,6 +62,7 @@ func Detect(relPath, dir string) *domain.Service {
 		svc.Port = exposed
 		svc.HostPort = exposed
 	}
+	svc.TestCmd = "go test ./..."
 	return svc
 }
 

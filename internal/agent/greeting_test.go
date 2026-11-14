@@ -49,7 +49,7 @@ func TestRunIntentGreetingSkipsToolsAndLLM(t *testing.T) {
 	if res.Intent == nil || res.Intent.Kind != IntentGreeting {
 		t.Fatalf("intent = %+v", res.Intent)
 	}
-	if !strings.Contains(res.Final, "Spool") {
+	if !strings.Contains(res.Final, "ORQEN") {
 		t.Fatalf("final = %q", res.Final)
 	}
 	for _, ev := range res.Events {

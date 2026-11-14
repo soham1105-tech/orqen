@@ -178,7 +178,7 @@ func TestRunIntentExplain(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(res.Final, "Spool topology") || !strings.Contains(res.Final, "web") {
+	if !strings.Contains(res.Final, "ORQEN topology") || !strings.Contains(res.Final, "web") {
 		t.Fatalf("unexpected explain:\n%s", res.Final)
 	}
 }

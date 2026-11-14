@@ -22,7 +22,7 @@ import (
 var envCmd = &cobra.Command{
 	Use:   "env [project] [set KEY=VALUE | unset KEY | list | config]",
 	Short: "Show and edit required environment variables",
-	Long:  "Show and edit project environment variables. `spool env <project> config` opens an interactive editor for every variable, including adding new ones.",
+	Long:  "Show and edit project environment variables. `orqen env <project> config` opens an interactive editor for every variable, including adding new ones.",
 	Args:  cobra.ArbitraryArgs,
 	RunE:  runEnv,
 }
@@ -59,7 +59,7 @@ func runEnv(cmd *cobra.Command, args []string) error {
 		return runEnvPanel(mgr, lock)
 	case "set":
 		if len(rest) == 0 {
-			return fmt.Errorf("usage: spool env %s set KEY=VALUE", mgr.ID)
+			return fmt.Errorf("usage: orqen env %s set KEY=VALUE", mgr.ID)
 		}
 		key, value, perr := parseKV(rest)
 		if perr != nil {
@@ -68,7 +68,7 @@ func runEnv(cmd *cobra.Command, args []string) error {
 		return setEnv(mgr, lock, key, value)
 	case "unset":
 		if len(rest) == 0 {
-			return fmt.Errorf("usage: spool env %s unset KEY", mgr.ID)
+			return fmt.Errorf("usage: orqen env %s unset KEY", mgr.ID)
 		}
 		return unsetEnv(mgr, lock, rest[0])
 	default:
@@ -136,7 +136,7 @@ func listEnv(mgr *state.Manager, lock *domain.Lock) error {
 	logf("%s", ui.Table([]string{"Variable", "Value", "Status", "Source"}, rows, "environment · "+lock.Project))
 	logf("%s", ui.MutedStyle.Render("file: "+mgr.EnvPath()))
 	if missing > 0 {
-		logf("%s", ui.WarningLine(fmt.Sprintf("%d variable(s) missing. Set one with: spool env %s set KEY=VALUE, or run: spool env %s config", missing, mgr.ID, mgr.ID)))
+		logf("%s", ui.WarningLine(fmt.Sprintf("%d variable(s) missing. Set one with: orqen env %s set KEY=VALUE, or run: orqen env %s config", missing, mgr.ID, mgr.ID)))
 		if isInteractive() && confirm(fmt.Sprintf("Configure %d missing variable(s) now?", missing)) {
 			return configureMissingEnv(mgr, lock, missingKeys)
 		}

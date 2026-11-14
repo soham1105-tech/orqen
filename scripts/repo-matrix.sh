@@ -5,11 +5,11 @@ set -uo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 cd "$ROOT"
-BIN=${BIN:-$ROOT/spool}
-export SPOOL_HOME=${SPOOL_HOME:-/tmp/spool-matrix-home}
-OUT=${OUT:-/tmp/spool-matrix}
-rm -rf "$SPOOL_HOME"
-mkdir -p "$SPOOL_HOME" "$OUT"
+BIN=${BIN:-$ROOT/orqen}
+export ORQEN_HOME=${ORQEN_HOME:-/tmp/orqen-matrix-home}
+OUT=${OUT:-/tmp/orqen-matrix}
+rm -rf "$ORQEN_HOME"
+mkdir -p "$ORQEN_HOME" "$OUT"
 
 DEFAULT_REPOS="
 https://github.com/monojitgoswami69/collabify

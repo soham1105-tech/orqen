@@ -26,8 +26,8 @@ jobs:
       - name: test (race)
         run: go test -race ./...
       - name: build
-        run: go build -trimpath -ldflags "-s -w" -o spool .
+        run: go build -trimpath -ldflags "-s -w" -o orqen .
       - uses: actions/upload-artifact@v4
         with:
-          name: spool-linux-amd64
-          path: spool
+          name: orqen-linux-amd64
+          path: orqen

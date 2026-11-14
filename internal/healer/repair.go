@@ -49,7 +49,7 @@ func ExtractPlan(raw string) (*RepairPlan, error) {
 	return &plan, nil
 }
 
-// AllowedRepairFile reports whether Spool may write name during repair.
+// AllowedRepairFile reports whether ORQEN may write name during repair.
 func AllowedRepairFile(name string) bool {
 	base := name
 	if i := strings.LastIndexAny(base, `/\`); i >= 0 {

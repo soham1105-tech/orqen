@@ -268,8 +268,8 @@ func (m *configPanelModel) View() string {
 	}
 	contentWidth := 66
 
-	header := ui.TitleStyle.Render("Spool configuration")
-	note := ui.MutedStyle.Render("Saved to ~/.spool/config.json. OS env / .env values still take precedence.")
+	header := ui.TitleStyle.Render("ORQEN configuration")
+	note := ui.MutedStyle.Render("Saved to ~/.orqen/config.json. OS env / .env values still take precedence.")
 
 	rows := []string{
 		m.row(cfgFieldProvider, "Provider", m.providerValue()),
@@ -333,7 +333,7 @@ func (m *configPanelModel) saveValue() string {
 // runConfigPanel opens the interactive configuration panel.
 func runConfigPanel() error {
 	if !isInteractive() {
-		return fmt.Errorf("interactive config needs a terminal; use `spool config set KEY VALUE`")
+		return fmt.Errorf("interactive config needs a terminal; use `orqen config set KEY VALUE`")
 	}
 	cfg := config.LoadOptional()
 	resolved, _ := config.Resolve()
@@ -349,6 +349,6 @@ func runConfigPanel() error {
 	}
 	path, _ := config.ConfigPath()
 	logf("%s", ui.SuccessLine("saved "+path))
-	logf("%s", ui.InfoLine("verify with: spool doctor"))
+	logf("%s", ui.InfoLine("verify with: orqen doctor"))
 	return nil
 }

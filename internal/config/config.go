@@ -1,6 +1,11 @@
-// Package config resolves Spool's LLM/provider settings from, in order of
-// precedence: OS environment, dotenv files, and ~/.spool/config.json. It also
+// Package config resolves ORQEN's LLM/provider settings from, in order of
+// precedence: OS environment, dotenv files, and ~/.orqen/config.json. It also
 // owns the application's directory layout.
+//
+// Environment variables are ORQEN_* (ORQEN_HOME, ORQEN_LLM_PROVIDER,
+// ORQEN_LLM_MODEL, ORQEN_LLM_API_KEY, ORQEN_LLM_BASE_URL, ORQEN_ENV_FILE).
+// The legacy SPOOL_* names are still honoured as a fallback so existing
+// setups keep working across the rename.
 package config
 
 import (
@@ -32,8 +37,12 @@ type Resolved struct {
 	Source   string
 }
 
-// Home returns the Spool home directory, honouring $SPOOL_HOME.
+// Home returns the ORQEN home directory, honouring $ORQEN_HOME (with
+// $SPOOL_HOME as a legacy fallback).
 func Home() (string, error) {
+	if h := strings.TrimSpace(os.Getenv("ORQEN_HOME")); h != "" {
+		return filepath.Abs(h)
+	}
 	if h := strings.TrimSpace(os.Getenv("SPOOL_HOME")); h != "" {
 		return filepath.Abs(h)
 	}
@@ -41,10 +50,10 @@ func Home() (string, error) {
 	if err != nil {
 		return "", domain.E(domain.KindConfig, "config.Home", "cannot determine home directory", err)
 	}
-	return filepath.Join(home, ".spool"), nil
+	return filepath.Join(home, ".orqen"), nil
 }
 
-// ConfigPath returns the path to ~/.spool/config.json.
+// ConfigPath returns the path to ~/.orqen/config.json.
 func ConfigPath() (string, error) {
 	h, err := Home()
 	if err != nil {
@@ -134,7 +143,7 @@ func load(strict bool) (*Config, error) {
 		if os.IsNotExist(err) {
 			if strict {
 				return nil, domain.E(domain.KindConfig, "config.Load",
-					fmt.Sprintf("config not found at %s (run `spool doctor` or set GEMINI_API_KEY)", p), err)
+					fmt.Sprintf("config not found at %s (run `orqen doctor` or set GEMINI_API_KEY)", p), err)
 			}
 			return nil, nil
 		}
@@ -189,13 +198,17 @@ func Save(c *Config) error {
 	return nil
 }
 
-// envFiles returns the dotenv files Spool will consult for runtime settings.
+// envFiles returns the dotenv files ORQEN will consult for runtime settings.
 func envFiles() []string {
 	var files []string
 	if h, err := Home(); err == nil {
 		files = append(files, filepath.Join(h, ".env"))
 	}
-	if explicit := strings.TrimSpace(os.Getenv("SPOOL_ENV_FILE")); explicit != "" {
+	explicit := firstNonEmpty(
+		os.Getenv("ORQEN_ENV_FILE"),
+		os.Getenv("SPOOL_ENV_FILE"), // legacy name
+	)
+	if explicit != "" {
 		files = append(files, explicit)
 	}
 	if wd, err := os.Getwd(); err == nil {
@@ -204,13 +217,17 @@ func envFiles() []string {
 	return files
 }
 
-// lookup resolves a key from OS env first, then dotenv files.
-func lookup(dotEnv map[string]string, key string) string {
-	if v, ok := os.LookupEnv(key); ok && strings.TrimSpace(v) != "" {
-		return strings.TrimSpace(v)
-	}
-	if v, ok := dotEnv[key]; ok && strings.TrimSpace(v) != "" {
-		return strings.TrimSpace(v)
+// lookupEnv resolves the first non-empty value among OS env / dotenv lookups
+// for the given keys, in order. It backs the ORQEN_* variables with their
+// legacy SPOOL_* equivalents.
+func lookupEnv(dotEnv map[string]string, keys ...string) string {
+	for _, key := range keys {
+		if v, ok := os.LookupEnv(key); ok && strings.TrimSpace(v) != "" {
+			return strings.TrimSpace(v)
+		}
+		if v, ok := dotEnv[key]; ok && strings.TrimSpace(v) != "" {
+			return strings.TrimSpace(v)
+		}
 	}
 	return ""
 }
@@ -274,13 +291,13 @@ func Resolve() (*Resolved, error) {
 	dotEnv := LoadDotEnv(envFiles()...)
 
 	provider := NormalizeProvider(firstNonEmpty(
-		lookup(dotEnv, "SPOOL_LLM_PROVIDER"),
+		lookupEnv(dotEnv, "ORQEN_LLM_PROVIDER", "SPOOL_LLM_PROVIDER"),
 		cfg.LLMProvider,
 	))
 	if provider == "" {
 		// Infer from whichever key is present.
 		for _, p := range []string{"gemini", "openai", "anthropic", "groq"} {
-			if lookup(dotEnv, providerEnvKey(p)) != "" {
+			if lookupEnv(dotEnv, providerEnvKey(p)) != "" {
 				provider = p
 				break
 			}
@@ -290,17 +307,20 @@ func Resolve() (*Resolved, error) {
 		return nil, domain.E(domain.KindConfig, "config.Resolve", "no LLM provider configured", domain.ErrNotConfigured)
 	}
 
-	model := firstNonEmpty(lookup(dotEnv, "SPOOL_LLM_MODEL"), cfg.LLMModel, DefaultModel(provider))
+	model := firstNonEmpty(lookupEnv(dotEnv, "ORQEN_LLM_MODEL", "SPOOL_LLM_MODEL"), cfg.LLMModel, DefaultModel(provider))
 
 	source := "config"
 	apiKey := ""
 	if pk := providerEnvKey(provider); pk != "" {
-		if v := lookup(dotEnv, pk); v != "" {
+		if v := lookupEnv(dotEnv, pk); v != "" {
 			apiKey, source = v, "env:"+pk
 		}
 	}
 	if apiKey == "" {
-		if v := firstNonEmpty(lookup(dotEnv, "SPOOL_LLM_API_KEY"), lookup(dotEnv, "LLM_API_KEY")); v != "" {
+		if v := firstNonEmpty(
+			lookupEnv(dotEnv, "ORQEN_LLM_API_KEY", "SPOOL_LLM_API_KEY"),
+			lookupEnv(dotEnv, "LLM_API_KEY"),
+		); v != "" {
 			apiKey, source = v, "env:generic"
 		}
 	}
@@ -308,11 +328,11 @@ func Resolve() (*Resolved, error) {
 		apiKey, source = cfg.LLMAPIKey, "config"
 	}
 
-	baseURL := firstNonEmpty(lookup(dotEnv, "SPOOL_LLM_BASE_URL"), cfg.LLMBaseURL)
+	baseURL := firstNonEmpty(lookupEnv(dotEnv, "ORQEN_LLM_BASE_URL", "SPOOL_LLM_BASE_URL"), cfg.LLMBaseURL)
 
 	if provider != "ollama" && apiKey == "" {
 		return nil, domain.E(domain.KindConfig, "config.Resolve",
-			fmt.Sprintf("provider %q has no API key (set %s or run `spool setup`)", provider, providerEnvKey(provider)),
+			fmt.Sprintf("provider %q has no API key (set %s or run `orqen setup`)", provider, providerEnvKey(provider)),
 			domain.ErrNotConfigured)
 	}
 
@@ -323,7 +343,7 @@ func Resolve() (*Resolved, error) {
 func GitHubToken() string {
 	cfg := LoadOptional()
 	dotEnv := LoadDotEnv(envFiles()...)
-	return firstNonEmpty(lookup(dotEnv, "GITHUB_PAT"), lookup(dotEnv, "GH_TOKEN"), cfg.GitHubPAT)
+	return firstNonEmpty(lookupEnv(dotEnv, "GITHUB_PAT"), lookupEnv(dotEnv, "GH_TOKEN"), cfg.GitHubPAT)
 }
 
 func firstNonEmpty(vals ...string) string {
@@ -335,7 +355,7 @@ func firstNonEmpty(vals ...string) string {
 	return ""
 }
 
-// Dir returns a resolved subdirectory of the Spool home, creating it 0700.
+// Dir returns a resolved subdirectory of the ORQEN home, creating it 0700.
 func Dir(parts ...string) (string, error) {
 	h, err := Home()
 	if err != nil {
@@ -348,7 +368,7 @@ func Dir(parts ...string) (string, error) {
 	return p, nil
 }
 
-// DotEnvFiles returns the dotenv files Spool consults at runtime.
+// DotEnvFiles returns the dotenv files ORQEN consults at runtime.
 func DotEnvFiles() []string { return envFiles() }
 
 // LoadEnvIntoProcess loads dotenv files into the process environment without

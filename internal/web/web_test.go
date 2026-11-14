@@ -119,7 +119,7 @@ func TestServerProjectsConfigAndAssets(t *testing.T) {
 	defer res.Body.Close()
 	var buf bytes.Buffer
 	_, _ = buf.ReadFrom(res.Body)
-	if !strings.Contains(buf.String(), `id="app"`) || !strings.Contains(buf.String(), "Spool") {
+	if !strings.Contains(buf.String(), `id="app"`) || !strings.Contains(buf.String(), "ORQEN") {
 		t.Fatalf("index missing app shell")
 	}
 }

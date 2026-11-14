@@ -20,7 +20,7 @@ func Reconcile(services []*domain.Service, alloc *portprobe.Allocator, globalEnv
 }
 
 // ReconcileWithExisting behaves like Reconcile but preserves pre-existing host
-// port assignments (used by `spool update` so a running stack keeps its URLs).
+// port assignments (used by `orqen update` so a running stack keeps its URLs).
 func ReconcileWithExisting(services []*domain.Service, alloc *portprobe.Allocator, globalEnv map[string]string, existing map[string]int) error {
 	if alloc == nil {
 		alloc = portprobe.New()

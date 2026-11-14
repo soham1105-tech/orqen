@@ -456,7 +456,7 @@ func (m *chatModel) View() string {
 	}
 	contentW := m.chatWidth()
 
-	header := ui.TitleStyle.Render("◆ Spool")
+	header := ui.TitleStyle.Render("◆ ORQEN")
 	var meta []string
 	if m.lock != nil {
 		meta = append(meta, ui.BoldStyle.Render(m.lock.Project))
@@ -530,7 +530,7 @@ func (m *chatModel) renderTranscript(width int) []string {
 			lines = append(lines, ui.HighlightStyle.Render("› You"))
 			lines = append(lines, indentLines(wrapText(msg.text, width-2), "  ")...)
 		} else {
-			lines = append(lines, ui.TitleStyle.Render("◆ Spool"))
+			lines = append(lines, ui.TitleStyle.Render("◆ ORQEN"))
 			lines = append(lines, indentLines(wrapText(ui.Markdown(msg.text), width-2), "  ")...)
 		}
 		lines = append(lines, "")
@@ -593,10 +593,10 @@ func runChat(cmd *cobra.Command, args []string) error {
 		provider: resolved.provider, modelName: resolved.model,
 	}
 	m.input = textinput.New()
-	m.input.Placeholder = "ask spool to scan, fix, explain, or run something…"
+	m.input.Placeholder = "ask orqen to scan, fix, explain, or run something…"
 	m.input.CharLimit = 2000
 	m.input.Width = 80
-	m.input.Placeholder = "Ask Spool anything — status, why it failed, fix it, explain…"
+	m.input.Placeholder = "Ask ORQEN anything — status, why it failed, fix it, explain…"
 	m.input.Prompt = "› "
 	m.input.PromptStyle = ui.TitleStyle
 	m.input.Focus()

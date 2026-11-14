@@ -1,4 +1,4 @@
-BINARY      := spool
+BINARY      := orqen
 MODULE      := github.com/monojitgoswami69/spool
 VERSION     ?= v0.4.0
 BUILD_TIME  ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
@@ -8,7 +8,7 @@ LDFLAGS     := -s -w -X $(MODULE)/cmd.Version=$(VERSION) -X $(MODULE)/cmd.BuildT
 
 all: build
 
-build: ## Build the spool binary
+build: ## Build the orqen binary
 	go build -trimpath -ldflags "$(LDFLAGS)" -o $(BINARY) .
 
 test: ## Run unit tests
@@ -37,7 +37,7 @@ heal-proof: ## Live proof: LLM repairs a runtime failure and a build failure
 tidy: ## Tidy module dependencies
 	go mod tidy
 
-install: ## Install spool into GOBIN
+install: ## Install orqen into GOBIN
 	go install -trimpath -ldflags "$(LDFLAGS)" .
 
 release: ## Build release artifacts with goreleaser

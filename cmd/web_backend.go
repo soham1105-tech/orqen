@@ -166,9 +166,9 @@ func (b *localWebBackend) localCommand(ctx context.Context, req web.ChatRequest,
 	case "/help":
 		return true, agent.HelpText() + "\n\n**Slash commands**\n" + slashHelp()
 	case "/version":
-		return true, "Spool " + Version
+		return true, "ORQEN " + Version
 	case "/setup":
-		return true, "Run `spool setup` in your terminal to enter provider keys securely (masked input)."
+		return true, "Run `orqen setup` in your terminal to enter provider keys securely (masked input)."
 	case "/doctor":
 		return true, b.doctorSummary(ctx)
 	case "/projects":
@@ -246,7 +246,7 @@ func (b *localWebBackend) doctorSummary(ctx context.Context) string {
 	fmt.Fprintf(&bld, "- docker daemon: %s\n", yesno(daemon))
 	fmt.Fprintf(&bld, "- compose v2: %s\n", yesno(compose))
 	fmt.Fprintf(&bld, "- llm: `%s/%s` (%s)\n", cfg.Provider, cfg.Model, key)
-	fmt.Fprintf(&bld, "- spool home: `%s`\n", cfg.Home)
+	fmt.Fprintf(&bld, "- orqen home: `%s`\n", cfg.Home)
 	return strings.TrimRight(bld.String(), "\n")
 }
 

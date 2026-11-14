@@ -206,7 +206,7 @@ func ruleSet() []deterministicRule {
 					if strings.Contains(out, "ENV "+name+"=") {
 						continue
 					}
-					out = insertBeforeFirstRun(out, "ENV "+name+"=spool-build-placeholder")
+					out = insertBeforeFirstRun(out, "ENV "+name+"=orqen-build-placeholder")
 					injected = append(injected, name)
 				}
 				if len(injected) == 0 {

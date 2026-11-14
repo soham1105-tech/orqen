@@ -51,7 +51,7 @@ func requireDocker(ctx context.Context) error {
 }
 
 func composeFor(mgr *state.Manager) *docker.Compose {
-	return docker.New(mgr.ComposePath(), mgr.Dir, "spool-"+mgr.ID)
+	return docker.New(mgr.ComposePath(), mgr.Dir, "orqen-"+mgr.ID)
 }
 
 // projectFor reconstructs the domain.Project from persisted state.
@@ -190,7 +190,7 @@ func printURLs(ctx context.Context, mgr *state.Manager, lock *domain.Lock) {
 		for _, p := range stopped {
 			names = append(names, p.Service)
 		}
-		logf("%s", ui.MutedStyle.Render(fmt.Sprintf("  ○ not running: %s — start with `spool up %s`", strings.Join(names, ", "), mgr.ID)))
+		logf("%s", ui.MutedStyle.Render(fmt.Sprintf("  ○ not running: %s — start with `orqen up %s`", strings.Join(names, ", "), mgr.ID)))
 	}
 }
 
@@ -363,5 +363,5 @@ func printEnvStatus(mgr *state.Manager, lock *domain.Lock) {
 		shown = shown[:10]
 	}
 	logf("%s", ui.WarningLine(fmt.Sprintf("%d variable(s) still unset: %s%s", len(missing), strings.Join(shown, ", "), extra)))
-	logf("%s", ui.InfoLine(fmt.Sprintf("set them with: spool env %s set KEY=VALUE", mgr.ID)))
+	logf("%s", ui.InfoLine(fmt.Sprintf("set them with: orqen env %s set KEY=VALUE", mgr.ID)))
 }

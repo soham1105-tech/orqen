@@ -1,4 +1,4 @@
-// Package docker is Spool's single boundary for invoking docker/compose. All
+// Package docker is ORQEN's single boundary for invoking docker/compose. All
 // container operations go through it; nothing else shells out to Docker.
 package docker
 
@@ -96,6 +96,35 @@ func (c *Compose) run(ctx context.Context, op string, args ...string) (string, e
 	out := buf.String()
 	if err != nil {
 		return out, domain.E(domain.KindDocker, "docker."+op, fmt.Sprintf("%s failed: %s", op, TailLines(out, 20)), err)
+	}
+	return out, nil
+}
+
+// Exec runs a command inside a running service container without a shell and
+// returns the combined stdout/stderr. It reuses the compose v1/v2 detection and
+// the existing -f/-p flag handling. A non-zero exit from the containerized
+// process is returned as an error that wraps *exec.ExitError, so callers can
+// recover the exit code; the output is returned in both cases.
+func (c *Compose) Exec(ctx context.Context, service string, argv ...string) (string, error) {
+	if strings.TrimSpace(service) == "" {
+		return "", domain.E(domain.KindValidation, "docker.Exec", "no service given", nil)
+	}
+	if len(argv) == 0 {
+		return "", domain.E(domain.KindValidation, "docker.Exec", "no command given", nil)
+	}
+	args := append([]string{"exec", "-T", service}, argv...)
+	cmd, _ := c.command(ctx, args...)
+	var buf bytes.Buffer
+	cmd.Stdout = &buf
+	cmd.Stderr = &buf
+	err := cmd.Run()
+	out := buf.String()
+	if err != nil {
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			return out, domain.E(domain.KindDocker, "docker.Exec",
+				fmt.Sprintf("command in service %s exited with status %d", service, exitErr.ExitCode()), err)
+		}
+		return out, domain.E(domain.KindDocker, "docker.Exec", fmt.Sprintf("exec failed: %s", TailLines(out, 20)), err)
 	}
 	return out, nil
 }

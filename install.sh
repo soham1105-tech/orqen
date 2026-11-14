@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Spool installer — builds from source with the local Go toolchain.
+# ORQEN installer — builds from source with the local Go toolchain.
 set -eu
 
 MODULE="github.com/monojitgoswami69/spool"
@@ -16,22 +16,22 @@ command -v git >/dev/null 2>&1 || die "git is required"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
-say "Cloning Spool..."
-git clone --depth=1 "$REPO" "$tmp/spool" >/dev/null 2>&1 || die "clone failed"
+say "Cloning ORQEN..."
+git clone --depth=1 "$REPO" "$tmp/orqen" >/dev/null 2>&1 || die "clone failed"
 
 say "Building..."
 (
-  cd "$tmp/spool"
+  cd "$tmp/orqen"
   go build -trimpath \
     -ldflags "-s -w -X ${MODULE}/cmd.Version=${VERSION} -X ${MODULE}/cmd.BuildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-    -o spool .
+    -o orqen .
 )
 
 mkdir -p "$BIN_DIR"
-install -m 755 "$tmp/spool/spool" "$BIN_DIR/spool"
-say "Installed spool to $BIN_DIR/spool"
+install -m 755 "$tmp/orqen/orqen" "$BIN_DIR/orqen"
+say "Installed orqen to $BIN_DIR/orqen"
 
 case ":${PATH}:" in
   *":${BIN_DIR}:"*) ;;
-  *) say "Add $BIN_DIR to your PATH to run 'spool' from anywhere." ;;
+  *) say "Add $BIN_DIR to your PATH to run 'orqen' from anywhere." ;;
 esac

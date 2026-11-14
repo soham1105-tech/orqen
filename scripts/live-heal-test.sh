@@ -4,11 +4,11 @@ set -uo pipefail
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 cd "$ROOT"
-BIN=${BIN:-$ROOT/spool}
-export SPOOL_HOME=${SPOOL_HOME:-/tmp/spool-heal-home}
+BIN=${BIN:-$ROOT/orqen}
+export ORQEN_HOME=${ORQEN_HOME:-/tmp/orqen-heal-home}
 
-rm -rf "$SPOOL_HOME"
-mkdir -p "$SPOOL_HOME"
+rm -rf "$ORQEN_HOME"
+mkdir -p "$ORQEN_HOME"
 
 # Remove containers from previous runs (same deterministic project ids).
 docker ps -aq --filter "name=llm-runtime-heal" | xargs -r docker rm -f >/dev/null 2>&1 || true

@@ -47,7 +47,7 @@ type onboardResult struct {
 	Intel        domain.RepoIntel
 }
 
-// runOnboarding is the shared end-to-end pipeline used by `spool init` and the
+// runOnboarding is the shared end-to-end pipeline used by `orqen init` and the
 // agent's onboard_repository tool.
 func runOnboarding(ctx context.Context, o onboardOptions) (*onboardResult, error) {
 	logf := o.Logf
@@ -102,7 +102,7 @@ func runOnboarding(ctx context.Context, o onboardOptions) (*onboardResult, error
 		logf("%s", ui.InfoLine("found existing Dockerfile(s): "+strings.Join(res.Intel.Dockerfiles, ", ")))
 	}
 	if len(res.Intel.ComposeFiles) > 0 {
-		logf("%s", ui.InfoLine("found existing compose file(s): "+strings.Join(res.Intel.ComposeFiles, ", ")+" (Spool generates a managed compose)"))
+		logf("%s", ui.InfoLine("found existing compose file(s): "+strings.Join(res.Intel.ComposeFiles, ", ")+" (ORQEN generates a managed compose)"))
 	}
 	project := &domain.Project{
 		ID: id, Name: projectName, SourcePath: sourcePath, IsLocal: isLocal,

@@ -1,4 +1,4 @@
-// Package ui holds Spool's terminal styling primitives.
+// Package ui holds ORQEN's terminal styling primitives.
 package ui
 
 import (
@@ -48,7 +48,7 @@ func SetNoColor() {
 
 // Banner renders the application banner.
 func Banner(version string) string {
-	return TitleStyle.Render("Spool") + MutedStyle.Render("  autonomous infrastructure control plane  "+version)
+	return TitleStyle.Render("ORQEN") + MutedStyle.Render("  build. test. heal. ship.  "+version)
 }
 
 // Header renders a command header.
@@ -56,7 +56,7 @@ func Header(command string) string {
 	if command == "" {
 		return ""
 	}
-	return MutedStyle.Render("spool "+command) + "\n"
+	return MutedStyle.Render("orqen "+command) + "\n"
 }
 
 // Section renders an uppercase section label.

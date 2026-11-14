@@ -1,4 +1,4 @@
-// Package dashboard implements Spool's three-tab live TUI: logs, env overrides,
+// Package dashboard implements ORQEN's three-tab live TUI: logs, env overrides,
 // and container controls with stats.
 package dashboard
 
@@ -84,7 +84,7 @@ func Run(ctx context.Context, mgr *state.Manager, lock *domain.Lock) error {
 	overrides, _ := mgr.LoadOverrides()
 	m := &Model{
 		ctx: cctx, cancel: cancel, mgr: mgr, lock: lock,
-		compose:     docker.New(mgr.ComposePath(), mgr.Dir, "spool-"+mgr.ID),
+		compose:     docker.New(mgr.ComposePath(), mgr.Dir, "orqen-"+mgr.ID),
 		services:    serviceNames(lock),
 		originalEnv: clone(env),
 		env:         env,

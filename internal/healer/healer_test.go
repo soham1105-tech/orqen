@@ -153,7 +153,7 @@ func TestApplyDeterministicHeapAfterFrom(t *testing.T) {
 func TestApplyDeterministicMissingEnv(t *testing.T) {
 	content := "FROM python:3.11-slim\nRUN pip install -r requirements.txt\n"
 	out, _, _, ok := ApplyDeterministic(content, "DATABASE_URL is not defined")
-	if !ok || !strings.Contains(out, "ENV DATABASE_URL=spool-build-placeholder") {
+	if !ok || !strings.Contains(out, "ENV DATABASE_URL=orqen-build-placeholder") {
 		t.Fatalf("expected env injection:\n%s", out)
 	}
 	out2, _, _, ok2 := ApplyDeterministic(content, "API_KEY is not defined")

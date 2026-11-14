@@ -1,11 +1,11 @@
 version: 2
 
-project_name: spool
+project_name: orqen
 
 builds:
-  - id: spool
+  - id: orqen
     main: .
-    binary: spool
+    binary: orqen
     env:
       - CGO_ENABLED=0
     goos: [linux, darwin, windows]

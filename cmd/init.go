@@ -74,7 +74,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	printEnvStatus(res.Manager, res.Lock)
 	if initNoRun {
 		logf("")
-		logf("Next: %s", ui.BoldStyle.Render("spool up "+res.Manager.ID))
+		logf("Next: %s", ui.BoldStyle.Render("orqen up "+res.Manager.ID))
 		return nil
 	}
 	logf("")

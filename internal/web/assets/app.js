@@ -1,4 +1,4 @@
-/* Spool web console — vanilla JS, no frameworks, no external assets. */
+/* ORQEN web console — vanilla JS, no frameworks, no external assets. */
 'use strict';
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -41,7 +41,7 @@ const COMMANDS = [
   ['/config', 'Show configuration'],
   ['/config set', 'Set a config key'],
   ['/doctor', 'Environment checks'],
-  ['/version', 'Spool version'],
+  ['/version', 'ORQEN version'],
   ['/open', 'Show live URLs'],
   ['/help', 'Help'],
   ['/new', 'New chat'],
@@ -437,7 +437,7 @@ function renderMessage(msg) {
 
   const role = document.createElement('div');
   role.className = 'role';
-  role.innerHTML = '<span class="mark">◈</span><span>Spool</span>';
+  role.innerHTML = '<span class="mark">◈</span><span>ORQEN</span>';
   article.appendChild(role);
 
   const body = document.createElement('div');
@@ -783,8 +783,8 @@ function finalizeTurn(done, placeholder, payload) {
 function showModal(confirmation) {
   const destructive = confirmation.destructive;
   els.modalText.textContent = destructive
-    ? `Spool needs approval for a destructive action: ${confirmation.tool}.`
-    : `Spool needs approval to run: ${confirmation.tool}.`;
+    ? `ORQEN needs approval for a destructive action: ${confirmation.tool}.`
+    : `ORQEN needs approval to run: ${confirmation.tool}.`;
   els.modalArgs.textContent = JSON.stringify(confirmation.args || {}, null, 2);
   els.modal.hidden = false;
   els.modalConfirm.focus();
@@ -1001,7 +1001,7 @@ function updateSlashActive(items) {
 }
 
 function readTheme() {
-  try { return localStorage.getItem('spool-theme') || 'light'; } catch (_) { return 'light'; }
+  try { return localStorage.getItem('orqen-theme') || 'light'; } catch (_) { return 'light'; }
 }
 
 function applyTheme(theme, persist = true) {
@@ -1012,6 +1012,6 @@ function applyTheme(theme, persist = true) {
     els.themeToggle.setAttribute('aria-pressed', value === 'dark' ? 'true' : 'false');
   }
   if (persist) {
-    try { localStorage.setItem('spool-theme', value); } catch (_) {}
+    try { localStorage.setItem('orqen-theme', value); } catch (_) {}
   }
 }

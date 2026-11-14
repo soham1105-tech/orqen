@@ -187,7 +187,7 @@ func Scan(root string) (*Result, error) {
 	}
 	if len(services) == 0 {
 		return nil, domain.E(domain.KindNotFound, "scanner.Scan",
-			fmt.Sprintf("no supported services detected in %s. Spool looks for package.json (Node/Next/Vite/Express), pyproject.toml/requirements.txt/Pipfile (FastAPI/Flask/Django), go.mod, Cargo.toml, an index.html static site, or a root Dockerfile. Add a manifest or Dockerfile, or run `spool doctor` to verify the environment.", abs), nil)
+			fmt.Sprintf("no supported services detected in %s. ORQEN looks for package.json (Node/Next/Vite/Express), pyproject.toml/requirements.txt/Pipfile (FastAPI/Flask/Django), go.mod, Cargo.toml, an index.html static site, or a root Dockerfile. Add a manifest or Dockerfile, or run `orqen doctor` to verify the environment.", abs), nil)
 	}
 
 	sort.Slice(services, func(i, j int) bool {

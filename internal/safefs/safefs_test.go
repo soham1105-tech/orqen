@@ -69,6 +69,9 @@ func TestJailRejectsSymlinkEscape(t *testing.T) {
 }
 
 func TestJailWriteSecretPerms(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("unix-style 0600 file modes are not enforced on windows")
+	}
 	root := t.TempDir()
 	j, _ := NewJail(root)
 	if err := j.WriteSecret(".env", []byte("KEY=value\n")); err != nil {

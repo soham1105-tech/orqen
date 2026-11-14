@@ -32,7 +32,7 @@ func runExplain(cmd *cobra.Command, args []string) error {
 	project := projectFor(mgr, lock)
 	g := graph.Build(project)
 
-	logf("%s", ui.TitleStyle.Render("Spool // "+lock.Project))
+	logf("%s", ui.TitleStyle.Render("ORQEN // "+lock.Project))
 	logf("")
 
 	logf("%s", ui.Section("applications"))
@@ -113,7 +113,7 @@ func runExplain(cmd *cobra.Command, args []string) error {
 		logf("")
 		logf("%s", ui.Section("configuration required"))
 		logf("%s", ui.Table([]string{"Variable", "Class", "Source"}, envRows, ""))
-		logf("%s", ui.InfoLine("edit with: spool dash "+mgr.ID))
+		logf("%s", ui.InfoLine("edit with: orqen dash "+mgr.ID))
 	}
 	return nil
 }

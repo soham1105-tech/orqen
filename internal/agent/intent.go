@@ -200,7 +200,8 @@ func ParseIntent(text string, ictx IntentContext) Intent {
 func isGreeting(lower string) bool {
 	s := strings.TrimRight(strings.TrimSpace(lower), "!?., ")
 	switch s {
-	case "what's up", "whats up", "wassup", "sup", "hi spool", "hello spool", "hey spool":
+	case "what's up", "whats up", "wassup", "sup", "hi spool", "hello spool", "hey spool",
+		"hi orqen", "hello orqen", "hey orqen":
 		return true
 	}
 	words := strings.Fields(s)
@@ -210,7 +211,7 @@ func isGreeting(lower string) bool {
 	for _, w := range words {
 		switch w {
 		case "hi", "hello", "hey", "yo", "howdy", "hola", "greetings", "thanks", "thank",
-			"you", "spool", "there", "all", "good", "morning", "afternoon", "evening", "friends":
+			"you", "spool", "orqen", "there", "all", "good", "morning", "afternoon", "evening", "friends":
 		default:
 			return false
 		}
@@ -222,7 +223,7 @@ func isGreeting(lower string) bool {
 // context. No tools, no LLM.
 func (a *Agent) greetingReply(ictx IntentContext) string {
 	var b strings.Builder
-	b.WriteString("Hey! I'm Spool, your infrastructure agent.")
+	b.WriteString("Hey! I'm ORQEN, your infrastructure agent.")
 	switch {
 	case ictx.CurrentProject != "":
 		fmt.Fprintf(&b, " I'm watching **%s** — ask me for status, health, logs, topology, or env changes; say \"heal\" if something looks off.", ictx.CurrentProject)
@@ -387,7 +388,7 @@ func (a *Agent) RunIntent(ctx context.Context, text string, ictx IntentContext) 
 		runsProjectLess := intent.Kind == IntentChat || intent.Kind == IntentHelp ||
 			intent.Kind == IntentGreeting || intent.Kind == IntentOnboard || intent.Kind == IntentSwitchProject
 		if !runsProjectLess && !(intent.Kind == IntentScan && intent.Path != "") {
-			res := a.resultFor("No projects are onboarded yet. Use `/onboard <git-url-or-path>` (or `spool init`) to bring one up, and I'll manage it from there.", intent)
+			res := a.resultFor("No projects are onboarded yet. Use `/onboard <git-url-or-path>` (or `orqen init`) to bring one up, and I'll manage it from there.", intent)
 			return res, nil
 		}
 	}
@@ -594,6 +595,9 @@ func (a *Agent) intentHealth(ctx context.Context, it Intent) (string, error) {
 	return strings.TrimRight(b.String(), "\n"), nil
 }
 
+// winPathRe matches Windows drive-letter paths such as C:\repo or D:/work.
+var winPathRe = regexp.MustCompile(`^[A-Za-z]:[\\/]`)
+
 func extractTarget(raw string) string {
 	if m := regexp.MustCompile(`(?:https?://|git@)\S+`).FindString(raw); m != "" {
 		return strings.Trim(m, `"'`)
@@ -604,6 +608,9 @@ func extractTarget(raw string) string {
 			continue
 		}
 		if strings.HasPrefix(f, "/") || strings.HasPrefix(f, "./") || strings.HasPrefix(f, "../") {
+			return f
+		}
+		if winPathRe.MatchString(f) {
 			return f
 		}
 		if strings.HasPrefix(f, "github.com/") {
@@ -685,7 +692,7 @@ func formatOnboard(out *OnboardResult) string {
 	}
 	if len(out.Missing) > 0 {
 		fmt.Fprintf(&b, "\n**Missing env**: `%s`\n", strings.Join(out.Missing, "`, `"))
-		fmt.Fprintf(&b, "Set them with `spool env %s set KEY=VALUE`.\n", out.ProjectID)
+		fmt.Fprintf(&b, "Set them with `orqen env %s set KEY=VALUE`.\n", out.ProjectID)
 	}
 	if strings.TrimSpace(out.HealSummary) != "" {
 		fmt.Fprintf(&b, "\n**Heal**: %s\n", out.HealSummary)
@@ -767,9 +774,9 @@ func (a *Agent) intentDiagnose(ctx context.Context, it Intent) (string, error) {
 		id = a.opts.Project.Name
 	}
 	fmt.Fprintf(&b, "\n**Next steps**\n")
-	fmt.Fprintf(&b, "- `spool heal %s`\n", id)
-	fmt.Fprintf(&b, "- `spool logs %s%s`\n", id, serviceSuffix(it.Service))
-	fmt.Fprintf(&b, "- `spool env %s`\n", id)
+	fmt.Fprintf(&b, "- `orqen heal %s`\n", id)
+	fmt.Fprintf(&b, "- `orqen logs %s%s`\n", id, serviceSuffix(it.Service))
+	fmt.Fprintf(&b, "- `orqen env %s`\n", id)
 	return strings.TrimRight(b.String(), "\n"), nil
 }
 
@@ -789,7 +796,7 @@ func diagnoseCause(category string) string {
 	case healer.CatMissingEnv:
 		return "a required environment variable is not set"
 	case healer.CatCompilation:
-		return "application source does not compile (Spool repairs manifests, not source)"
+		return "application source does not compile (ORQEN repairs manifests, not source)"
 	case healer.CatNextBuild:
 		return "Next.js failed while building or collecting page data"
 	case healer.CatDockerBuild:
@@ -885,7 +892,7 @@ Return JSON only:
 {"kind":"status","project":"","service":"","key":"","value":"","path":"","port":0,"confidence":0.9,"goal":"restate the goal","needs_clarification":false,"clarification":""}`, string(ctx), text)
 }
 
-const intentSystemPrompt = `You are Spool's intent classifier. You are precise and conservative: when uncertain you ask one clarifying question instead of guessing. Return only valid JSON.`
+const intentSystemPrompt = `You are ORQEN's intent classifier. You are precise and conservative: when uncertain you ask one clarifying question instead of guessing. Return only valid JSON.`
 
 func helpText() string {
 	return strings.Join([]string{

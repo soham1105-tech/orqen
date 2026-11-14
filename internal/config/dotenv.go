@@ -7,7 +7,7 @@ import (
 
 // ParseDotEnv parses dotenv content into a map. It is deliberately lenient:
 // blank lines, comments, and malformed entries are skipped rather than erroring,
-// because a broken .env must never prevent Spool from starting.
+// because a broken .env must never prevent ORQEN from starting.
 func ParseDotEnv(data []byte) map[string]string {
 	out := make(map[string]string)
 	for _, raw := range strings.Split(string(data), "\n") {

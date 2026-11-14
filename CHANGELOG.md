@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.5.0 (ORQEN)
+
+### Rebrand
+- The project is now **ORQEN** ("Build. Test. Heal. Ship."). All user-facing
+  output, docs, and web UI strings were renamed; the Go module path and the
+  repository URL are unchanged.
+- State root defaults to `~/.orqen` (set `ORQEN_HOME`); migrate an existing
+  install with `mv ~/.spool ~/.orqen`.
+- `ORQEN_LLM_*` environment variables replace `SPOOL_LLM_*`; the legacy
+  `SPOOL_*` names (including `SPOOL_HOME` and `SPOOL_ENV_FILE`) are still
+  honoured as fallbacks.
+- Per-project lock files are now `orqen.lock.json`; existing
+  `spool.lock.json` files keep loading.
+
+### Automated in-container testing
+- New `orqen test [project] [--service <name>]`: detects a test command for
+  every service (npm/pnpm/yarn/bun test script, jest/vitest dependency,
+  pytest/unittest for Python, `go test ./...`, `cargo test`), runs it inside
+  the service's running container via `docker compose exec -T` (no shell), and
+  reports per-service passed/failed/skipped counts parsed from runner output.
+- Unknown output formats never crash and never count as success; failures show
+  the last 30 lines of raw output. Exit code 1 when any suite fails, 0 when
+  everything passes or nothing is detected.
+
+### Windows test fixes
+- POSIX-style 0600 permission assertions now skip on Windows instead of
+  failing; the chat `onboard` recognizer accepts Windows drive-letter paths.
+
 ## v0.4.1
 
 ### Honest status & live progress

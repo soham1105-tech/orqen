@@ -67,7 +67,7 @@ func TestWebSendNoProjectGreetingAndZeroProjects(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(out.Final, "Spool") {
+	if !strings.Contains(out.Final, "ORQEN") {
 		t.Fatalf("greeting final = %q", out.Final)
 	}
 

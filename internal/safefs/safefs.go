@@ -1,4 +1,4 @@
-// Package safefs is Spool's filesystem safety boundary. Every path that an
+// Package safefs is ORQEN's filesystem safety boundary. Every path that an
 // LLM-controlled agent or an untrusted build log can influence MUST be resolved
 // through a Jail before any read, write, or delete. The jail resolves symlinks
 // component-by-component, refuses escapes, and performs atomic writes.
@@ -210,7 +210,7 @@ func WriteFileAtomic(path string, data []byte, perm os.FileMode) error {
 	}
 	// Never allow group/other write bits on files we create.
 	perm &^= 0o022
-	tmp, err := os.CreateTemp(dir, ".spool-tmp-*")
+	tmp, err := os.CreateTemp(dir, ".orqen-tmp-*")
 	if err != nil {
 		return fmt.Errorf("safefs: temp: %w", err)
 	}
@@ -297,7 +297,7 @@ func SafeRemoveAll(target string, allowedRoots ...string) error {
 			continue
 		}
 		// The target itself may equal a root only when it is a project clone
-		// directory, never a global root like ~/.spool. We require strict
+		// directory, never a global root like ~/.orqen. We require strict
 		// containment to stay conservative.
 		ok, err := IsSubPath(root, abs)
 		if err != nil {

@@ -67,7 +67,7 @@ func envPanelKeys(lock *domain.Lock, overrides map[string]string) []string {
 	return keys
 }
 
-// applyEnvEdit persists one variable edit the same way `spool env set` does.
+// applyEnvEdit persists one variable edit the same way `orqen env set` does.
 func applyEnvEdit(mgr *state.Manager, lock *domain.Lock, overrides map[string]string, key, value string) error {
 	overrides[key] = value
 	if err := mgr.SaveOverrides(overrides); err != nil {
@@ -76,7 +76,7 @@ func applyEnvEdit(mgr *state.Manager, lock *domain.Lock, overrides map[string]st
 	return writeProjectEnv(mgr, lock)
 }
 
-// applyEnvUnset clears one variable the same way `spool env unset` does.
+// applyEnvUnset clears one variable the same way `orqen env unset` does.
 func applyEnvUnset(mgr *state.Manager, lock *domain.Lock, overrides map[string]string, key string) error {
 	return applyEnvEdit(mgr, lock, overrides, key, "")
 }
@@ -322,7 +322,7 @@ func (m *envPanelModel) View() string {
 
 	var b strings.Builder
 	if m.mode == envModeEdit {
-		b.WriteString(ui.TitleStyle.Render("Spool environment") + ui.MutedStyle.Render(" · edit variable"))
+		b.WriteString(ui.TitleStyle.Render("ORQEN environment") + ui.MutedStyle.Render(" · edit variable"))
 		b.WriteString("\n\n")
 		label := m.editKey
 		if envvar.IsSecretName(label) {
@@ -331,12 +331,12 @@ func (m *envPanelModel) View() string {
 		b.WriteString(ui.BoldStyle.Render(label) + " = " + m.input.View() + "\n\n")
 		b.WriteString(ui.MutedStyle.Render("enter save · esc cancel"))
 	} else if m.mode == envModeNewKey {
-		b.WriteString(ui.TitleStyle.Render("Spool environment") + ui.MutedStyle.Render(" · new variable"))
+		b.WriteString(ui.TitleStyle.Render("ORQEN environment") + ui.MutedStyle.Render(" · new variable"))
 		b.WriteString("\n\n")
 		b.WriteString(ui.BoldStyle.Render("Name") + " = " + m.input.View() + "\n\n")
 		b.WriteString(ui.MutedStyle.Render("enter continue to value · esc cancel"))
 	} else {
-		b.WriteString(ui.TitleStyle.Render("Spool environment") + ui.MutedStyle.Render(" · "+m.lock.Project))
+		b.WriteString(ui.TitleStyle.Render("ORQEN environment") + ui.MutedStyle.Render(" · "+m.lock.Project))
 		b.WriteString("\n")
 		b.WriteString(ui.MutedStyle.Render("Saved to " + m.mgr.EnvPath() + " as you edit; overrides win over discovered values."))
 		b.WriteString("\n\n")
@@ -404,7 +404,7 @@ func (m *envPanelModel) row(i int) string {
 // runEnvPanel opens the interactive environment editor for a project.
 func runEnvPanel(mgr *state.Manager, lock *domain.Lock) error {
 	if !isInteractive() {
-		return fmt.Errorf("interactive env needs a terminal; use `spool env %s set KEY=VALUE`", mgr.ID)
+		return fmt.Errorf("interactive env needs a terminal; use `orqen env %s set KEY=VALUE`", mgr.ID)
 	}
 	m, err := newEnvPanelModel(mgr, lock)
 	if err != nil {

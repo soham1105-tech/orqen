@@ -16,7 +16,7 @@ import (
 	"github.com/pelletier/go-toml/v2"
 )
 
-// PyProject is the subset of pyproject.toml Spool reads (PEP 621 + Poetry).
+// PyProject is the subset of pyproject.toml ORQEN reads (PEP 621 + Poetry).
 type PyProject struct {
 	Project struct {
 		Name           string              `toml:"name"`
@@ -309,6 +309,7 @@ func Detect(relPath, dir string, pyproj *PyProject, pm domain.PackageManager) *d
 	} else {
 		svc.HostPort = svc.DefaultPort
 	}
+	svc.TestCmd = TestCommand(dir, deps)
 	return svc
 }
 
@@ -545,4 +546,15 @@ func IsPythonDir(dir string) bool {
 		}
 	}
 	return false
+}
+
+// TestCommand resolves the in-container test command for a Python service.
+// pytest is used when it is a dependency or a tests/ directory exists;
+// otherwise the stdlib unittest discovery is used, so plain Python services
+// always have a runnable default.
+func TestCommand(dir string, deps map[string]bool) string {
+	if deps["pytest"] || fsutil.Exists(filepath.Join(dir, "tests")) {
+		return "python -m pytest -q"
+	}
+	return "python -m unittest discover -q"
 }

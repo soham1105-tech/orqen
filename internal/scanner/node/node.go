@@ -14,7 +14,7 @@ import (
 	"github.com/monojitgoswami69/spool/internal/scanner/fsutil"
 )
 
-// PackageJSON is the subset of package.json Spool cares about.
+// PackageJSON is the subset of package.json ORQEN cares about.
 type PackageJSON struct {
 	Name             string            `json:"name"`
 	Version          string            `json:"version"`
@@ -125,6 +125,35 @@ func HasLockfile(dir string) bool {
 		}
 	}
 	return false
+}
+
+// TestCommand resolves the in-container test command for a Node service. The
+// package manager mirrors StartCmd/BuildCmd conventions; a dedicated test
+// runner dependency wins only when there is no test script. Returns "" when no
+// test command can be identified.
+func TestCommand(dir string, pkg *PackageJSON, pm domain.PackageManager) string {
+	if pkg == nil {
+		return ""
+	}
+	if hasScript(pkg, "test") {
+		switch pm {
+		case domain.PMPnpm:
+			return "pnpm test"
+		case domain.PMYarn:
+			return "yarn test"
+		case domain.PMBun:
+			return "bun test"
+		default:
+			return "npm test"
+		}
+	}
+	switch {
+	case pkg.HasDependency("jest"):
+		return "npx jest"
+	case pkg.HasDependency("vitest"):
+		return "npx vitest run"
+	}
+	return ""
 }
 
 // Detect builds a domain.Service from a parsed package.json. relPath is the
@@ -255,6 +284,8 @@ func Detect(relPath, dir string, pkg *PackageJSON, pm domain.PackageManager) *do
 		svc.Port = svc.DefaultPort
 		svc.HostPort = svc.DefaultPort
 	}
+
+	svc.TestCmd = TestCommand(dir, pkg, pm)
 
 	// Honour an explicit Dockerfile EXPOSE only after framework defaults are set,
 	// fixing the prior generation where framework branches clobbered it.

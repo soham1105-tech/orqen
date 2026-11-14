@@ -1,12 +1,12 @@
 # Security
 
 ## Secrets
-- `.env`, `.env.*`, and the `spool` binary are gitignored; only `.env.example`
+- `.env`, `.env.*`, and the `orqen` binary are gitignored; only `.env.example`
   is committed.
-- Spool writes project env files with `0600` permissions and refuses
+- ORQEN writes project env files with `0600` permissions and refuses
   group/other-writable files.
 - Credential-bearing URLs (e.g. `postgres://user:pass@host`) are masked in
-  `spool env`.
+  `orqen env`.
 - Git tokens are passed through `GIT_CONFIG_*` environment variables, never
   argv, and are scrubbed from errors.
 
@@ -16,7 +16,7 @@
   and caps reads.
 - The healer may only modify generated `Dockerfile.*`, `docker-compose.yml`,
   and `.dockerignore` inside the project workspace.
-- `nuke` only removes paths inside Spool-owned roots and refuses `/`, `.`, and
+- `nuke` only removes paths inside ORQEN-owned roots and refuses `/`, `.`, and
   the home directory.
 
 ## Repair invariants

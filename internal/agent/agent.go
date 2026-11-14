@@ -358,8 +358,8 @@ func summarize(s string) string {
 	return s
 }
 
-// SystemPrompt is the standing instruction for the Spool agent.
-const SystemPrompt = `You are Spool, an autonomous infrastructure control-plane agent.
+// SystemPrompt is the standing instruction for the ORQEN agent.
+const SystemPrompt = `You are ORQEN, an autonomous infrastructure control-plane agent.
 Before acting, restate the user's intent in one sentence and identify the target project/service.
 If the request is ambiguous, ask exactly one clarifying question and do not act.
 You inspect repositories, infer backing services, synthesize container manifests, orchestrate

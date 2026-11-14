@@ -29,12 +29,12 @@ func init() {
 
 func runSetup(cmd *cobra.Command, args []string) error {
 	if !isInteractive() {
-		return fmt.Errorf("setup needs an interactive terminal; use `spool config set <key> <value>` instead")
+		return fmt.Errorf("setup needs an interactive terminal; use `orqen config set <key> <value>` instead")
 	}
 	cfg := config.LoadOptional()
 	reader := bufio.NewReader(os.Stdin)
 
-	logf("%s", ui.TitleStyle.Render("Spool setup"))
+	logf("%s", ui.TitleStyle.Render("ORQEN setup"))
 	logf("%s", ui.MutedStyle.Render("Configure the agent, then verify it live."))
 	logf("")
 	logf("%s", ui.Section("LLM provider"))

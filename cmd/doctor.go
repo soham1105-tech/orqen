@@ -45,7 +45,7 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 	checks = append(checks, pathCheck("ssh (localhost.run fallback)", "ssh"))
 
 	if home, err := config.Home(); err == nil {
-		checks = append(checks, doctorCheck{name: "spool home", ok: true, detail: home})
+		checks = append(checks, doctorCheck{name: "orqen home", ok: true, detail: home})
 	}
 
 	var rows [][]string
